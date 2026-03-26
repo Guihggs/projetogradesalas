@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Consulta de Salas - Jovem Candango | DEMA Aprendiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul-jc: #0059b3;
+            --amarelo-jc: #ffda00;
+            --azul-escuro: #003366;
+            --branco: #FFFFFF;
+            --cinza-claro: #f4f7fc;
+            --sombra: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--azul-jc) 0%, var(--azul-escuro) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Cabeçalho */
+        .header-banner {
+            background: var(--branco);
+            padding: 12px 30px;
+            border-bottom: 5px solid var(--amarelo-jc);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-dema {
+            display: flex;
+            flex-direction: column;
+            line-height: 0.85;
+        }
+
+        .dema-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--azul-jc);
+            letter-spacing: -1.5px;
+        }
+
+        .aprendiz-text {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--azul-jc);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .logo-jc-img {
+            height: 70px;
+            width: auto;
+            transition: transform 0.2s ease;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        /* Painel de filtros (etapa de escolha) */
+        .filter-panel {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 6px;
+            margin: 10px 0 30px 0;
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            box-shadow: var(--sombra);
+        }
+
+        .btn-turno {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: white;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(2px);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-turno i {
+            font-style: normal;
+            font-size: 1.2rem;
+        }
+
+        .btn-turno:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .btn-turno.active {
+            background: var(--amarelo-jc);
+            color: var(--azul-escuro);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+        }
+
+        /* Seções de turno */
+        .turno-section {
+            margin-bottom: 40px;
+            animation: fadeSlideUp 0.3s ease-out;
+        }
+
+        .turno-title {
+            background: var(--amarelo-jc);
+            color: var(--azul-escuro);
+            padding: 12px 25px;
+            border-radius: 14px 14px 0 0;
+            font-weight: 900;
+            text-transform: uppercase;
+            display: inline-block;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .grid-salas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 22px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            border-radius: 0 20px 20px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(2px);
+        }
+
+        .sala-item {
+            background: white;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: var(--sombra);
+            border-left: 6px solid var(--amarelo-jc);
+            transition: all 0.2s;
+        }
+
+        .sala-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: #5a6874;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            margin-top: 12px;
+        }
+
+        .info-label:first-of-type {
+            margin-top: 0;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: var(--azul-escuro);
+            font-size: 1rem;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .prof-name {
+            color: var(--azul-jc);
+            font-size: 1.1rem;
+            border-bottom: 2px solid #ffe3a3;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .sala-destaque {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #004b8f;
+            letter-spacing: -0.3px;
+        }
+
+        .empty-message {
+            background: rgba(255,255,240,0.9);
+            border-radius: 24px;
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--azul-escuro);
+            font-weight: 600;
+            font-size: 1rem;
+            grid-column: 1 / -1;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading {
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.3rem;
+            font-weight: 500;
+            background: rgba(0,0,0,0.2);
+            border-radius: 40px;
+            backdrop-filter: blur(6px);
+        }
+
+        footer {
+            background: var(--amarelo-jc);
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 2px solid rgba(0,0,0,0.05);
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .btn-turno {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+            }
+            .grid-salas {
+                padding: 16px;
+                gap: 16px;
+            }
+            .turno-title {
+                font-size: 1rem;
+                padding: 8px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-banner">
+        <div class="header-content">
+            <div class="logo-dema">
+                <span class="dema-text">demà</span>
+                <span class="aprendiz-text">APRENDIZ</span>
+            </div>
+            <img src="image_d313e3.png" alt="Logo Jovem Candango" class="logo-jc-img" onerror="this.style.display='none'">
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="loading" class="loading">📅 Buscando turmas e salas...</div>
+
+        <!-- Painel de escolha (etapa antes da visualização) -->
+        <div id="filterBar" class="filter-panel" style="display: none;">
+            <button class="btn-turno" data-turno="matutino">☀️ Matutino</button>
+            <button class="btn-turno" data-turno="vespertino">🌅 Vespertino</button>
+            <button class="btn-turno" data-turno="todos">📌 Todos os turnos</button>
+        </div>
+
+        <div id="section-matutino" class="turno-section" style="display: none;">
+            <div class="turno-title">☀️ Turno Matutino</div>
+            <div class="grid-salas" id="grid-matutino"></div>
+        </div>
+
+        <div id="section-vespertino" class="turno-section" style="display: none;">
+            <div class="turno-title">🌅 Turno Vespertino</div>
+            <div class="grid-salas" id="grid-vespertino"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo-dema" style="align-items: center; transform: scale(0.6); margin: 0 auto;">
+            <span class="dema-text" style="color: var(--azul-escuro);">demà</span>
+            <span class="aprendiz-text" style="color: var(--azul-escuro);">APRENDIZ</span>
+        </div>
+        <p style="font-size: 0.7rem; margin-top: 5px; color: #004d80;">Consulta integrada com dados oficiais</p>
+    </footer>
+
+    <script>
+        // URL da planilha pública (formato CSV)
+        const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTKdS9Fy5s2qdtqXIWGmuzp8l3KGVwLXRa2l0QIsQf5r0G-Sm6wZ_V84-8UEHRexnHvwooUo_loVCwH/pub?output=csv';
+
+        // Estado para guardar referências dos grids e dados processados
+        let matutinoGrid, vespertinoGrid;
+        let secMat, secVesp;
+        let filterBar;
+        let activeTurno = null; // 'matutino', 'vespertino', 'todos'
+
+        // Função para tratar CSV com possíveis aspas (parse robusto para vírgulas dentro de campos)
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < csvText.length; i++) {
+                const char = csvText[i];
+                const nextChar = csvText[i + 1];
+                
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        currentField += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(currentField.trim());
+                    currentField = '';
+                } else if (char === '\n' && !inQuotes) {
+                    currentRow.push(currentField.trim());
+                    if (currentRow.length > 0 && !(currentRow.length === 1 && currentRow[0] === '')) {
+                        rows.push(currentRow);
+                    }
+                    currentRow = [];
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
+            }
+            // Último campo se não tiver quebra de linha final
+            if (currentField !== undefined || currentRow.length) {
+                currentRow.push(currentField.trim());
+                if (currentRow.length > 0 && !(currentRow.length === 1 && currentRow[0] === '')) {
+                    rows.push(currentRow);
+                }
+            }
+            return rows;
+        }
+
+        // Cria card da sala/instrutor
+        function createCard(item) {
+            const card = document.createElement('div');
+            card.className = 'sala-item';
+            
+            const nomeProfessor = item['NOME PROFESSOR(A)'] && item['NOME PROFESSOR(A)'] !== '' ? item['NOME PROFESSOR(A)'] : 'A definir';
+            const codTurma = item.CODTURMA || '---';
+            const predio = item.PREDIO_NOME_TURMADISC && item.PREDIO_NOME_TURMADISC !== '' ? item.PREDIO_NOME_TURMADISC : 'Local não informado';
+            const sala = item.SALA_TURMADISCIPLINA && item.SALA_TURMADISCIPLINA !== '' ? item.SALA_TURMADISCIPLINA : '—';
+            
+            card.innerHTML = `
+                <div class="info-label">Instrutor(a)</div>
+                <div class="info-value prof-name">${escapeHtml(nomeProfessor)}</div>
+                
+                <div class="info-label">Código da Turma</div>
+                <div class="info-value">${escapeHtml(codTurma)}</div>
+                
+                <div class="info-label">Local</div>
+                <div class="info-value">${escapeHtml(predio)}</div>
+                
+                <div class="info-label">Sala</div>
+                <div class="info-value sala-destaque">${escapeHtml(sala)}</div>
+            `;
+            return card;
+        }
+
+        // Prevenção básica contra XSS
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+
+        // Verifica grids vazios e insere mensagem amigável
+        function handleEmptyGrids() {
+            if (matutinoGrid.children.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-message';
+                emptyDiv.innerHTML = '📭 Nenhuma turma encontrada para o turno Matutino.';
+                matutinoGrid.appendChild(emptyDiv);
+            }
+            if (vespertinoGrid.children.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-message';
+                emptyDiv.innerHTML = '📭 Nenhuma turma encontrada para o turno Vespertino.';
+                vespertinoGrid.appendChild(emptyDiv);
+            }
+        }
+
+        // Mostra/esconde seções baseado no turno ativo (etapa de escolha)
+        function updateVisibilityByTurno(turno) {
+            // Esconder ambas as seções primeiro
+            secMat.style.display = 'none';
+            secVesp.style.display = 'none';
+            
+            if (turno === 'matutino') {
+                secMat.style.display = 'block';
+            } else if (turno === 'vespertino') {
+                secVesp.style.display = 'block';
+            } else if (turno === 'todos') {
+                secMat.style.display = 'block';
+                secVesp.style.display = 'block';
+            }
+        }
+
+        // Atualiza estado visual dos botões
+        function setActiveButton(turno) {
+            const buttons = document.querySelectorAll('.btn-turno');
+            buttons.forEach(btn => {
+                const btnTurno = btn.getAttribute('data-turno');
+                if (btnTurno === turno) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Função principal de renderização após carregar dados
+        function renderizar(dados) {
+            // Limpar grids para não duplicar (caso recarregue)
+            matutinoGrid.innerHTML = '';
+            vespertinoGrid.innerHTML = '';
+            
+            let matCount = 0, vespCount = 0;
+            
+            dados.forEach(item => {
+                if (!item.CODTURMA) return; // ignora linhas inválidas
+                
+                const turnoRaw = item.TURNO ? item.TURNO.toUpperCase().trim() : '';
+                let turnoIdentificado = '';
+                
+                if (turnoRaw.includes('MATUTINO') || turnoRaw === 'M') {
+                    turnoIdentificado = 'matutino';
+                } else if (turnoRaw.includes('VESPERTINO') || turnoRaw === 'V') {
+                    turnoIdentificado = 'vespertino';
+                } else {
+                    return; // turno não reconhecido, ignora
+                }
+                
+                const card = createCard(item);
+                
+                if (turnoIdentificado === 'matutino') {
+                    matutinoGrid.appendChild(card);
+                    matCount++;
+                } else if (turnoIdentificado === 'vespertino') {
+                    vespertinoGrid.appendChild(card);
+                    vespCount++;
+                }
+            });
+            
+            // Adiciona mensagens caso algum grid fique vazio
+            handleEmptyGrids();
+            
+            // Exibe o painel de filtros (etapa de escolha) após dados carregados
+            filterBar.style.display = 'flex';
+            const loadingDiv = document.getElementById('loading');
+            if (loadingDiv) loadingDiv.style.display = 'none';
+            
+            // Se houver dados mas ainda não houver escolha, definir padrão como "todos" (opcional)
+            // mas mantemos sem seleção automática para que o usuário escolha.
+            // Porém, para não deixar seções visíveis antes da escolha, garantimos que ambas estão ocultas
+            secMat.style.display = 'none';
+            secVesp.style.display = 'none';
+            
+            // Se o usuário já tinha um filtro ativo antes (ex: recarregou), restaura? por simplicidade inicia neutro.
+            activeTurno = null;
+            setActiveButton(null);
+        }
+        
+        // Carrega os dados da planilha
+        async function carregarDados() {
+            try {
+                const response = await fetch(URL_PLANILHA);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const csvText = await response.text();
+                
+                // Parse CSV robusto
+                const rows = parseCSV(csvText);
+                if (rows.length < 2) throw new Error('Planilha sem dados suficientes');
+                
+                const headers = rows[0].map(h => h.replace(/^"|"$/g, '').trim());
+                const items = [];
+                
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    const obj = {};
+                    headers.forEach((header, idx) => {
+                        let val = (row[idx] !== undefined) ? row[idx] : '';
+                        val = val.replace(/^"|"$/g, '').trim();
+                        obj[header] = val;
+                    });
+                    // Só adiciona se tiver código de turma ou ao menos algum campo relevante
+                    if (obj.CODTURMA && obj.CODTURMA !== '') {
+                        items.push(obj);
+                    }
+                }
+                
+                if (items.length === 0) {
+                    throw new Error('Nenhuma turma válida encontrada na planilha.');
+                }
+                
+                renderizar(items);
+            } catch (error) {
+                console.error('Erro ao carregar planilha:', error);
+                const loadingDiv = document.getElementById('loading');
+                if (loadingDiv) {
+                    loadingDiv.innerHTML = '⚠️ Erro ao carregar os dados. Verifique a conexão ou tente novamente mais tarde.<br><small>' + error.message + '</small>';
+                    loadingDiv.style.background = 'rgba(220,53,69,0.8)';
+                    loadingDiv.style.borderRadius = '24px';
+                }
+                // esconde filtros em caso de erro crítico
+                if (filterBar) filterBar.style.display = 'none';
+            }
+        }
+        
+        // Configura os eventos dos botões (etapa interativa)
+        function setupFilterEvents() {
+            const btnMatutino = document.querySelector('.btn-turno[data-turno="matutino"]');
+            const btnVespertino = document.querySelector('.btn-turno[data-turno="vespertino"]');
+            const btnTodos = document.querySelector('.btn-turno[data-turno="todos"]');
+            
+            if (btnMatutino) {
+                btnMatutino.addEventListener('click', () => {
+                    activeTurno = 'matutino';
+                    updateVisibilityByTurno('matutino');
+                    setActiveButton('matutino');
+                });
+            }
+            if (btnVespertino) {
+                btnVespertino.addEventListener('click', () => {
+                    activeTurno = 'vespertino';
+                    updateVisibilityByTurno('vespertino');
+                    setActiveButton('vespertino');
+                });
+            }
+            if (btnTodos) {
+                btnTodos.addEventListener('click', () => {
+                    activeTurno = 'todos';
+                    updateVisibilityByTurno('todos');
+                    setActiveButton('todos');
+                });
+            }
+        }
+        
+        // Aguardar o DOM e iniciar tudo
+        window.addEventListener('DOMContentLoaded', () => {
+            matutinoGrid = document.getElementById('grid-matutino');
+            vespertinoGrid = document.getElementById('grid-vespertino');
+            secMat = document.getElementById('section-matutino');
+            secVesp = document.getElementById('section-vespertino');
+            filterBar = document.getElementById('filterBar');
+            
+            // Inicialmente esconder seções e aguardar dados
+            if (secMat) secMat.style.display = 'none';
+            if (secVesp) secVesp.style.display = 'none';
+            if (filterBar) filterBar.style.display = 'none';
+            
+            // Carregar os dados
+            carregarDados().then(() => {
+                // Após carregar, configurar eventos dos filtros
+                setupFilterEvents();
+                // Opcional: se desejar exibir uma mensagem de boas-vindas, o usuário agora escolhe o turno
+                // Dica visual: o painel de botões já aparece, aguardando ação.
+            }).catch(err => {
+                console.warn("Falha na inicialização:", err);
+            });
+        });
+    </script>
+</body>
+</html>
