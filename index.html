@@ -82,6 +82,66 @@
             width: 100%;
         }
 
+        /* Campo de busca */
+        .search-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            border-radius: 24px;
+            padding: 12px 24px;
+            margin: 10px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--sombra);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .search-icon {
+            font-size: 1.3rem;
+            color: var(--amarelo-jc);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 8px;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+        }
+
+        .clear-search {
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .clear-search:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+
+        .clear-search.visible {
+            display: flex;
+        }
+
         /* Painel de filtros (etapa de escolha) */
         .filter-panel {
             background: rgba(255, 255, 255, 0.12);
@@ -271,6 +331,12 @@
                 font-size: 1rem;
                 padding: 8px 20px;
             }
+            .search-container {
+                padding: 10px 16px;
+            }
+            .search-input {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -288,6 +354,19 @@
 
     <div class="container">
         <div id="loading" class="loading">📅 Buscando turmas e salas...</div>
+
+        <!-- Campo de busca -->
+        <div id="searchContainer" class="search-container" style="display: none;">
+            <span class="search-icon">🔍</span>
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="Buscar por nome do instrutor..."
+                autocomplete="off"
+            >
+            <button id="clearSearch" class="clear-search">✕</button>
+        </div>
 
         <!-- Painel de escolha (etapa antes da visualização) -->
         <div id="filterBar" class="filter-panel" style="display: none;">
@@ -312,7 +391,7 @@
             <span class="dema-text" style="color: var(--azul-escuro);">demà</span>
             <span class="aprendiz-text" style="color: var(--azul-escuro);">APRENDIZ</span>
         </div>
-        <p style="font-size: 0.7rem; margin-top: 5px; color: #004d80;">Um futuro para cada história.</p>
+        <p style="font-size: 0.7rem; margin-top: 5px; color: #004d80;">Consulta integrada com dados oficiais</p>
     </footer>
 
     <script>
@@ -324,6 +403,8 @@
         let secMat, secVesp;
         let filterBar;
         let activeTurno = null; // 'matutino', 'vespertino', 'todos'
+        let searchContainer, searchInput, clearSearchBtn;
+        let allData = []; // Armazena todos os dados para filtrar
 
         // Função para tratar CSV com possíveis aspas (parse robusto para vírgulas dentro de campos)
         function parseCSV(csvText) {
@@ -452,14 +533,24 @@
         }
 
         // Função principal de renderização após carregar dados
-        function renderizar(dados) {
+        function renderizar(dados, searchTerm = '') {
             // Limpar grids para não duplicar (caso recarregue)
             matutinoGrid.innerHTML = '';
             vespertinoGrid.innerHTML = '';
             
             let matCount = 0, vespCount = 0;
             
-            dados.forEach(item => {
+            // Filtrar dados por nome do instrutor se houver termo de busca
+            let dadosFiltrados = dados;
+            if (searchTerm.trim() !== '') {
+                const termoBusca = searchTerm.toLowerCase().trim();
+                dadosFiltrados = dados.filter(item => {
+                    const nomeProf = item['NOME PROFESSOR(A)'] || '';
+                    return nomeProf.toLowerCase().includes(termoBusca);
+                });
+            }
+            
+            dadosFiltrados.forEach(item => {
                 if (!item.CODTURMA) return; // ignora linhas inválidas
                 
                 const turnoRaw = item.TURNO ? item.TURNO.toUpperCase().trim() : '';
@@ -487,8 +578,9 @@
             // Adiciona mensagens caso algum grid fique vazio
             handleEmptyGrids();
             
-            // Exibe o painel de filtros (etapa de escolha) após dados carregados
+            // Exibe o painel de filtros e busca após dados carregados
             filterBar.style.display = 'flex';
+            searchContainer.style.display = 'flex';
             const loadingDiv = document.getElementById('loading');
             if (loadingDiv) loadingDiv.style.display = 'none';
             
@@ -499,8 +591,14 @@
             secVesp.style.display = 'none';
             
             // Se o usuário já tinha um filtro ativo antes (ex: recarregou), restaura? por simplicidade inicia neutro.
-            activeTurno = null;
-            setActiveButton(null);
+            if (!activeTurno) {
+                activeTurno = null;
+                setActiveButton(null);
+            } else {
+                // Mantém o turno ativo se já existir
+                updateVisibilityByTurno(activeTurno);
+                setActiveButton(activeTurno);
+            }
         }
         
         // Carrega os dados da planilha
@@ -535,7 +633,9 @@
                     throw new Error('Nenhuma turma válida encontrada na planilha.');
                 }
                 
-                renderizar(items);
+                // Salvar dados globalmente para filtros
+                allData = items;
+                renderizar(allData);
             } catch (error) {
                 console.error('Erro ao carregar planilha:', error);
                 const loadingDiv = document.getElementById('loading');
@@ -546,6 +646,7 @@
                 }
                 // esconde filtros em caso de erro crítico
                 if (filterBar) filterBar.style.display = 'none';
+                if (searchContainer) searchContainer.style.display = 'none';
             }
         }
         
@@ -578,6 +679,47 @@
             }
         }
         
+        // Configura eventos de busca
+        function setupSearchEvents() {
+            if (!searchInput || !clearSearchBtn) return;
+            
+            // Evento de digitação com debounce
+            let searchTimeout;
+            searchInput.addEventListener('input', (e) => {
+                const value = e.target.value;
+                
+                // Mostrar/ocultar botão limpar
+                if (value.trim() !== '') {
+                    clearSearchBtn.classList.add('visible');
+                } else {
+                    clearSearchBtn.classList.remove('visible');
+                }
+                
+                // Debounce para não filtrar a cada tecla
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    renderizar(allData, value);
+                }, 300);
+            });
+            
+            // Botão limpar busca
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearSearchBtn.classList.remove('visible');
+                renderizar(allData, '');
+                searchInput.focus();
+            });
+            
+            // Limpar com ESC
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    searchInput.value = '';
+                    clearSearchBtn.classList.remove('visible');
+                    renderizar(allData, '');
+                }
+            });
+        }
+        
         // Aguardar o DOM e iniciar tudo
         window.addEventListener('DOMContentLoaded', () => {
             matutinoGrid = document.getElementById('grid-matutino');
@@ -585,16 +727,21 @@
             secMat = document.getElementById('section-matutino');
             secVesp = document.getElementById('section-vespertino');
             filterBar = document.getElementById('filterBar');
+            searchContainer = document.getElementById('searchContainer');
+            searchInput = document.getElementById('searchInput');
+            clearSearchBtn = document.getElementById('clearSearch');
             
             // Inicialmente esconder seções e aguardar dados
             if (secMat) secMat.style.display = 'none';
             if (secVesp) secVesp.style.display = 'none';
             if (filterBar) filterBar.style.display = 'none';
+            if (searchContainer) searchContainer.style.display = 'none';
             
             // Carregar os dados
             carregarDados().then(() => {
-                // Após carregar, configurar eventos dos filtros
+                // Após carregar, configurar eventos dos filtros e busca
                 setupFilterEvents();
+                setupSearchEvents();
                 // Opcional: se desejar exibir uma mensagem de boas-vindas, o usuário agora escolhe o turno
                 // Dica visual: o painel de botões já aparece, aguardando ação.
             }).catch(err => {
