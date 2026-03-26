@@ -487,6 +487,12 @@
             });
         }
 
+        // Remove acentos e caracteres especiais para busca
+        function removerAcentos(str) {
+            if (!str) return '';
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
         // Verifica grids vazios e insere mensagem amigável
         function handleEmptyGrids() {
             if (matutinoGrid.children.length === 0) {
@@ -543,10 +549,14 @@
             // Filtrar dados por nome do instrutor se houver termo de busca
             let dadosFiltrados = dados;
             if (searchTerm.trim() !== '') {
-                const termoBusca = searchTerm.toLowerCase().trim();
+                // Normaliza o termo de busca: remove acentos e converte para minúsculas
+                const termoBusca = removerAcentos(searchTerm.toLowerCase().trim());
+                
                 dadosFiltrados = dados.filter(item => {
                     const nomeProf = item['NOME PROFESSOR(A)'] || '';
-                    return nomeProf.toLowerCase().includes(termoBusca);
+                    // Normaliza o nome do professor: remove acentos e converte para minúsculas
+                    const nomeProfNormalizado = removerAcentos(nomeProf.toLowerCase());
+                    return nomeProfNormalizado.includes(termoBusca);
                 });
             }
             
