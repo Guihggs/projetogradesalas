@@ -46,25 +46,10 @@
             gap: 15px;
         }
 
-        .logo-dema {
-            display: flex;
-            flex-direction: column;
-            line-height: 0.85;
-        }
-
-        .dema-text {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--azul-jc);
-            letter-spacing: -1.5px;
-        }
-
-        .aprendiz-text {
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--azul-jc);
-            letter-spacing: 3px;
-            text-transform: uppercase;
+        .logo-dema-img {
+            height: 60px;
+            width: auto;
+            transition: transform 0.2s ease;
         }
 
         .logo-jc-img {
@@ -344,10 +329,7 @@
 
     <header class="header-banner">
         <div class="header-content">
-            <div class="logo-dema">
-                <span class="dema-text">demà</span>
-                <span class="aprendiz-text">APRENDIZ</span>
-            </div>
+            <img src="demalogo.png" alt="Logo DEMA Aprendiz" class="logo-dema-img" onerror="this.style.display='none'">
             <img src="logo.png" alt="Logo Jovem Candango" class="logo-jc-img" onerror="this.style.display='none'">
         </div>
     </header>
@@ -387,11 +369,8 @@
     </div>
 
     <footer>
-        <div class="logo-dema" style="align-items: center; transform: scale(0.6); margin: 0 auto;">
-            <span class="dema-text" style="color: var(--azul-escuro);">demà</span>
-            <span class="aprendiz-text" style="color: var(--azul-escuro);">APRENDIZ</span>
-        </div>
-        <p style="font-size: 0.7rem; margin-top: 5px; color: #004d80;">Consulta integrada com dados oficiais</p>
+        <img src="demalogo.png" alt="Logo DEMA Aprendiz" style="height: 40px; width: auto; opacity: 0.9;" onerror="this.style.display='none'">
+        <p style="font-size: 0.7rem; margin-top: 10px; color: #004d80;">Um futuro para cada história.</p>
     </footer>
 
     <script>
