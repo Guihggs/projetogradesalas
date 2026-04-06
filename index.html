@@ -18,6 +18,8 @@
             --branco: #FFFFFF;
             --cinza-claro: #f4f7fc;
             --sombra: 0 8px 20px rgba(0,0,0,0.1);
+            --verde-matricula: #28a745;
+            --laranja-pre: #fd7e14;
         }
 
         body {
@@ -257,6 +259,76 @@
             letter-spacing: -0.3px;
         }
 
+        /* Estilos para contadores de alunos */
+        .alunos-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px dashed #e0e6ed;
+        }
+
+        .aluno-badge {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 8px;
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .aluno-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .aluno-badge.matriculado {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid var(--verde-matricula);
+        }
+
+        .aluno-badge.pre-matriculado {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px solid var(--laranja-pre);
+        }
+
+        .aluno-badge-icon {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .aluno-badge-numero {
+            font-size: 1.6rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .aluno-badge.matriculado .aluno-badge-numero {
+            color: var(--verde-matricula);
+        }
+
+        .aluno-badge.pre-matriculado .aluno-badge-numero {
+            color: var(--laranja-pre);
+        }
+
+        .aluno-badge-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .aluno-badge.matriculado .aluno-badge-label {
+            color: #1b5e20;
+        }
+
+        .aluno-badge.pre-matriculado .aluno-badge-label {
+            color: #e65100;
+        }
+
         .empty-message {
             background: rgba(255,255,240,0.9);
             border-radius: 24px;
@@ -321,6 +393,15 @@
             }
             .search-input {
                 font-size: 1rem;
+            }
+            .alunos-container {
+                gap: 8px;
+            }
+            .aluno-badge-numero {
+                font-size: 1.4rem;
+            }
+            .aluno-badge-label {
+                font-size: 0.6rem;
             }
         }
     </style>
@@ -437,6 +518,10 @@
             const predio = item.PREDIO_NOME_TURMADISC && item.PREDIO_NOME_TURMADISC !== '' ? item.PREDIO_NOME_TURMADISC : 'Local não informado';
             const sala = item.SALA_TURMADISCIPLINA && item.SALA_TURMADISCIPLINA !== '' ? item.SALA_TURMADISCIPLINA : '—';
             
+            // Novos campos de alunos
+            const alunosMatriculados = item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0';
+            const alunosPreMatriculados = item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0';
+            
             card.innerHTML = `
                 <div class="info-label">Instrutor(a)</div>
                 <div class="info-value prof-name">${escapeHtml(nomeProfessor)}</div>
@@ -449,6 +534,19 @@
                 
                 <div class="info-label">Sala</div>
                 <div class="info-value sala-destaque">${escapeHtml(sala)}</div>
+                
+                <div class="alunos-container">
+                    <div class="aluno-badge matriculado">
+                        <div class="aluno-badge-icon">✓</div>
+                        <div class="aluno-badge-numero">${escapeHtml(alunosMatriculados)}</div>
+                        <div class="aluno-badge-label">Matriculados</div>
+                    </div>
+                    <div class="aluno-badge pre-matriculado">
+                        <div class="aluno-badge-icon">⏳</div>
+                        <div class="aluno-badge-numero">${escapeHtml(alunosPreMatriculados)}</div>
+                        <div class="aluno-badge-label">Pré-Matric.</div>
+                    </div>
+                </div>
             `;
             return card;
         }
