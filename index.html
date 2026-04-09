@@ -481,19 +481,21 @@ function removerAcentos(s) {
 
 /* ── Build a sala card ── */
 function cardHTML(item) {
-    const prof   = esc(item['NOME PROFESSOR(A)'] || 'A definir');
-    const cod    = esc(item['CODTURMA'] || '---');
-    const predio = esc(item['PREDIO_NOME_TURMADISC'] || 'Local não informado');
-    const sala   = esc(item['SALA_TURMADISCIPLINA'] || '—');
-    const matric = esc(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
-    const pre    = esc(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
-    const search = removerAcentos((item['NOME PROFESSOR(A)']||'').toLowerCase());
+    const prof       = esc(item['NOME PROFESSOR(A)'] || 'A definir');
+    const cod        = esc(item['CODTURMA'] || '---');
+    const turmaNome  = esc(item['TURMA NOME'] || '');
+    const predio     = esc(item['PREDIO_NOME_TURMADISC'] || 'Local não informado');
+    const sala       = esc(item['SALA_TURMADISCIPLINA'] || '—');
+    const matric     = esc(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
+    const pre        = esc(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
+    const search     = removerAcentos((item['NOME PROFESSOR(A)']||'').toLowerCase());
 
     return `<div class="sala-item" data-search="${esc(search)}">
         <div class="info-label">Instrutor(a)</div>
         <div class="info-value prof-name">${prof}</div>
         <div class="info-label">Código da Turma</div>
         <div class="info-value">${cod}</div>
+        ${turmaNome ? `<div class="info-label">Nome da Turma</div><div class="info-value">${turmaNome}</div>` : ''}
         <div class="info-label">Local</div>
         <div class="info-value">${predio}</div>
         <div class="info-label">Sala</div>
