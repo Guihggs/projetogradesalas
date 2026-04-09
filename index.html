@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Consulta de Salas - Jovem Candango | DEMA Aprendiz</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --azul-jc: #0059b3;
             --amarelo-jc: #ffda00;
@@ -21,7 +16,6 @@
             --verde-matricula: #28a745;
             --laranja-pre: #fd7e14;
         }
-
         body {
             font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, var(--azul-jc) 0%, var(--azul-escuro) 100%);
@@ -30,14 +24,13 @@
             flex-direction: column;
         }
 
-        /* Cabeçalho */
+        /* ── HEADER ── */
         .header-banner {
             background: var(--branco);
             padding: 12px 30px;
             border-bottom: 5px solid var(--amarelo-jc);
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-
         .header-content {
             display: flex;
             justify-content: space-between;
@@ -47,20 +40,10 @@
             flex-wrap: wrap;
             gap: 15px;
         }
+        .logo-dema-img { height: 60px; width: auto; }
+        .logo-jc-img   { height: 70px; width: auto; }
 
-        .logo-dema-img {
-            height: 60px;
-            width: auto;
-            transition: transform 0.2s ease;
-        }
-
-        .logo-jc-img {
-            height: 70px;
-            width: auto;
-            transition: transform 0.2s ease;
-        }
-
-        /* Container principal */
+        /* ── CONTAINER ── */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -69,25 +52,20 @@
             width: 100%;
         }
 
-        /* Campo de busca */
+        /* ── SEARCH ── */
         .search-container {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.15);
             backdrop-filter: blur(6px);
             border-radius: 24px;
             padding: 12px 24px;
-            margin: 10px 0 20px 0;
-            display: flex;
+            margin: 10px 0 18px 0;
+            display: none;
             align-items: center;
             gap: 12px;
             box-shadow: var(--sombra);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255,255,255,0.2);
         }
-
-        .search-icon {
-            font-size: 1.3rem;
-            color: var(--amarelo-jc);
-        }
-
+        .search-icon { font-size: 1.3rem; color: var(--amarelo-jc); }
         .search-input {
             flex: 1;
             background: transparent;
@@ -99,19 +77,13 @@
             padding: 8px;
             font-family: inherit;
         }
-
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 400;
-        }
-
+        .search-input::placeholder { color: rgba(255,255,255,0.6); font-weight: 400; }
         .clear-search {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255,255,255,0.25);
             border: none;
             color: white;
             font-size: 1.2rem;
-            width: 32px;
-            height: 32px;
+            width: 32px; height: 32px;
             border-radius: 50%;
             cursor: pointer;
             display: none;
@@ -119,228 +91,227 @@
             justify-content: center;
             transition: all 0.2s ease;
         }
+        .clear-search:hover { background: rgba(255,255,255,0.4); transform: rotate(90deg); }
+        .clear-search.visible { display: flex; }
 
-        .clear-search:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: rotate(90deg);
-        }
-
-        .clear-search.visible {
-            display: flex;
-        }
-
-        /* Painel de filtros (etapa de escolha) */
-        .filter-panel {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            padding: 6px;
-            margin: 10px 0 30px 0;
-            display: inline-flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        /* ── GRADE TABS ── */
+        .grade-tabs {
+            display: none;
             gap: 12px;
-            width: 100%;
-            box-shadow: var(--sombra);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
         }
-
-        .btn-turno {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 40px;
+        .grade-tab {
+            flex: 1;
+            min-width: 140px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 16px;
+            padding: 14px 20px;
             cursor: pointer;
             transition: all 0.25s ease;
             color: white;
             font-family: inherit;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(2px);
-            display: inline-flex;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
+            backdrop-filter: blur(4px);
         }
-
-        .btn-turno i {
-            font-style: normal;
-            font-size: 1.2rem;
-        }
-
-        .btn-turno:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: translateY(-2px);
-        }
-
-        .btn-turno.active {
+        .grade-tab:hover { background: rgba(255,255,255,0.28); transform: translateY(-2px); }
+        .grade-tab.active {
             background: var(--amarelo-jc);
             color: var(--azul-escuro);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+            border-color: var(--amarelo-jc);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
         }
-
-        /* Seções de turno */
-        .turno-section {
-            margin-bottom: 40px;
-            animation: fadeSlideUp 0.3s ease-out;
+        .grade-tab .tab-badge {
+            background: rgba(0,0,0,0.12);
+            border-radius: 20px;
+            padding: 2px 9px;
+            font-size: 0.75rem;
+            font-weight: 800;
         }
+        .grade-tab.active .tab-badge { background: rgba(0,51,102,0.15); }
 
-        .turno-title {
+        /* ── DAY FILTER BAR ── */
+        .day-filter-bar {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 48px;
+            padding: 5px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-start;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .btn-dia {
+            background: transparent;
+            border: none;
+            padding: 9px 18px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255,255,255,0.75);
+            font-family: inherit;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .btn-dia:hover { background: rgba(255,255,255,0.2); color: white; }
+        .btn-dia.active { background: var(--azul-escuro); color: var(--amarelo-jc); box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
+
+        /* ── TURNO SECTIONS ── */
+        .grade-content { display: none; animation: fadeSlideUp 0.3s ease-out; }
+        .grade-content.visible { display: block; }
+
+        .dia-section { margin-bottom: 32px; }
+        .dia-section.hidden { display: none; }
+
+        .dia-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2px;
+        }
+        .dia-pill {
             background: var(--amarelo-jc);
             color: var(--azul-escuro);
-            padding: 12px 25px;
+            padding: 9px 22px;
             border-radius: 14px 14px 0 0;
             font-weight: 900;
             text-transform: uppercase;
-            display: inline-block;
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: inline-block;
         }
-
-        .grid-salas {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-            gap: 22px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 24px;
-            border-radius: 0 20px 20px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+        .dia-count {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
             backdrop-filter: blur(2px);
         }
 
+        /* turno sub-header */
+        .turno-sub {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border-left: 4px solid rgba(255,255,255,0.3);
+            margin: 4px 0;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .turno-sub.mat { border-left-color: #ffd166; color: #ffd166; }
+        .turno-sub.vesp { border-left-color: #f4a261; color: #f4a261; }
+
+        .grid-salas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 0 18px 18px 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(2px);
+        }
+
+        /* ── CARDS ── */
         .sala-item {
             background: white;
-            padding: 20px;
-            border-radius: 18px;
+            padding: 18px;
+            border-radius: 16px;
             box-shadow: var(--sombra);
             border-left: 6px solid var(--amarelo-jc);
             transition: all 0.2s;
         }
-
-        .sala-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-        }
+        .sala-item:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .sala-item.hidden { display: none; }
 
         .info-label {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: #5a6874;
             text-transform: uppercase;
             font-weight: 800;
             letter-spacing: 0.8px;
-            margin-top: 12px;
+            margin-top: 10px;
         }
-
-        .info-label:first-of-type {
-            margin-top: 0;
-        }
-
+        .info-label:first-of-type { margin-top: 0; }
         .info-value {
             font-weight: 700;
             color: var(--azul-escuro);
-            font-size: 1rem;
-            margin-bottom: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
             word-break: break-word;
         }
-
         .prof-name {
             color: var(--azul-jc);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             border-bottom: 2px solid #ffe3a3;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
+            padding-bottom: 7px;
+            margin-bottom: 8px;
             font-weight: 800;
         }
+        .sala-destaque { font-size: 1.4rem; font-weight: 800; color: #004b8f; }
 
-        .sala-destaque {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #004b8f;
-            letter-spacing: -0.3px;
-        }
-
-        /* Estilos para contadores de alunos */
         .alunos-container {
             display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            padding-top: 16px;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 14px;
             border-top: 2px dashed #e0e6ed;
         }
-
         .aluno-badge {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px 8px;
-            border-radius: 12px;
+            padding: 9px 6px;
+            border-radius: 10px;
             transition: transform 0.2s ease;
         }
-
-        .aluno-badge:hover {
-            transform: scale(1.05);
-        }
-
+        .aluno-badge:hover { transform: scale(1.05); }
         .aluno-badge.matriculado {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            background: linear-gradient(135deg,#e8f5e9,#c8e6c9);
             border: 2px solid var(--verde-matricula);
         }
-
         .aluno-badge.pre-matriculado {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            background: linear-gradient(135deg,#fff3e0,#ffe0b2);
             border: 2px solid var(--laranja-pre);
         }
+        .aluno-badge-icon { font-size: 1.1rem; margin-bottom: 3px; }
+        .aluno-badge-numero { font-size: 1.5rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+        .aluno-badge.matriculado .aluno-badge-numero { color: var(--verde-matricula); }
+        .aluno-badge.pre-matriculado .aluno-badge-numero { color: var(--laranja-pre); }
+        .aluno-badge-label { font-size: 0.62rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.4px; text-align: center; line-height: 1.2; }
+        .aluno-badge.matriculado .aluno-badge-label { color: #1b5e20; }
+        .aluno-badge.pre-matriculado .aluno-badge-label { color: #e65100; }
 
-        .aluno-badge-icon {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-        }
-
-        .aluno-badge-numero {
-            font-size: 1.6rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 2px;
-        }
-
-        .aluno-badge.matriculado .aluno-badge-numero {
-            color: var(--verde-matricula);
-        }
-
-        .aluno-badge.pre-matriculado .aluno-badge-numero {
-            color: var(--laranja-pre);
-        }
-
-        .aluno-badge-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-align: center;
-            line-height: 1.2;
-        }
-
-        .aluno-badge.matriculado .aluno-badge-label {
-            color: #1b5e20;
-        }
-
-        .aluno-badge.pre-matriculado .aluno-badge-label {
-            color: #e65100;
-        }
-
+        /* ── EMPTY / LOADING ── */
         .empty-message {
             background: rgba(255,255,240,0.9);
-            border-radius: 24px;
-            padding: 32px 20px;
+            border-radius: 16px;
+            padding: 28px 20px;
             text-align: center;
             color: var(--azul-escuro);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             grid-column: 1 / -1;
-            backdrop-filter: blur(4px);
         }
-
         .loading {
             color: white;
             text-align: center;
@@ -352,6 +323,18 @@
             backdrop-filter: blur(6px);
         }
 
+        /* ── SEARCH RESULT COUNT ── */
+        .search-result-info {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: none;
+            padding: 0 4px;
+        }
+        .search-result-info.visible { display: block; }
+
+        /* ── FOOTER ── */
         footer {
             background: var(--amarelo-jc);
             padding: 20px;
@@ -361,480 +344,388 @@
         }
 
         @keyframes fadeSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 640px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .btn-turno {
-                padding: 8px 18px;
-                font-size: 0.9rem;
-            }
-            .grid-salas {
-                padding: 16px;
-                gap: 16px;
-            }
-            .turno-title {
-                font-size: 1rem;
-                padding: 8px 20px;
-            }
-            .search-container {
-                padding: 10px 16px;
-            }
-            .search-input {
-                font-size: 1rem;
-            }
-            .alunos-container {
-                gap: 8px;
-            }
-            .aluno-badge-numero {
-                font-size: 1.4rem;
-            }
-            .aluno-badge-label {
-                font-size: 0.6rem;
-            }
+            .header-content { flex-direction: column; text-align: center; }
+            .grade-tab { min-width: 120px; font-size: 0.9rem; padding: 11px 14px; }
+            .btn-dia { padding: 7px 13px; font-size: 0.82rem; }
+            .grid-salas { padding: 14px; gap: 14px; }
+            .dia-pill { font-size: 0.9rem; padding: 7px 16px; }
+            .search-container { padding: 10px 14px; }
+            .search-input { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <header class="header-banner">
-        <div class="header-content">
-            <img src="demalogo.png" alt="Logo DEMA Aprendiz" class="logo-dema-img" onerror="this.style.display='none'">
-            <img src="logo.png" alt="Logo Jovem Candango" class="logo-jc-img" onerror="this.style.display='none'">
-        </div>
-    </header>
+<header class="header-banner">
+    <div class="header-content">
+        <img src="demalogo.png" alt="Logo DEMA Aprendiz" class="logo-dema-img" onerror="this.style.display='none'">
+        <img src="logo.png"     alt="Logo Jovem Candango" class="logo-jc-img"   onerror="this.style.display='none'">
+    </div>
+</header>
 
-    <div class="container">
-        <div id="loading" class="loading">📅 Buscando turmas e salas...</div>
+<div class="container">
+    <div id="loading" class="loading">📅 Buscando turmas e salas...</div>
 
-        <!-- Campo de busca -->
-        <div id="searchContainer" class="search-container" style="display: none;">
-            <span class="search-icon">🔍</span>
-            <input 
-                type="text" 
-                id="searchInput" 
-                class="search-input" 
-                placeholder="Buscar por nome do instrutor..."
-                autocomplete="off"
-            >
-            <button id="clearSearch" class="clear-search">✕</button>
-        </div>
-
-        <!-- Painel de escolha (etapa antes da visualização) -->
-        <div id="filterBar" class="filter-panel" style="display: none;">
-            <button class="btn-turno" data-turno="matutino">☀️ Matutino</button>
-            <button class="btn-turno" data-turno="vespertino">🌅 Vespertino</button>
-            <button class="btn-turno" data-turno="todos">📌 Todos os turnos</button>
-        </div>
-
-        <div id="section-matutino" class="turno-section" style="display: none;">
-            <div class="turno-title">☀️ Turno Matutino</div>
-            <div class="grid-salas" id="grid-matutino"></div>
-        </div>
-
-        <div id="section-vespertino" class="turno-section" style="display: none;">
-            <div class="turno-title">🌅 Turno Vespertino</div>
-            <div class="grid-salas" id="grid-vespertino"></div>
-        </div>
+    <!-- Busca -->
+    <div id="searchContainer" class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input"
+               placeholder="Buscar por nome do instrutor..." autocomplete="off">
+        <button id="clearSearch" class="clear-search">✕</button>
     </div>
 
-    <footer>
-        <img src="demalogo.png" alt="Logo DEMA Aprendiz" style="height: 40px; width: auto; opacity: 0.9;" onerror="this.style.display='none'">
-        <p style="font-size: 0.7rem; margin-top: 10px; color: #004d80;">Um futuro para cada história.</p>
-    </footer>
+    <div id="searchResultInfo" class="search-result-info"></div>
 
-    <script>
-        // URL da planilha pública (formato CSV)
-        const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTKdS9Fy5s2qdtqXIWGmuzp8l3KGVwLXRa2l0QIsQf5r0G-Sm6wZ_V84-8UEHRexnHvwooUo_loVCwH/pub?output=csv';
+    <!-- Tabs Presencial / EAD -->
+    <div id="gradeTabs" class="grade-tabs">
+        <button class="grade-tab active" data-grade="presencial">
+            🏫 Presencial <span class="tab-badge" id="badge-presencial">0</span>
+        </button>
+        <button class="grade-tab" data-grade="ead">
+            💻 EAD <span class="tab-badge" id="badge-ead">0</span>
+        </button>
+    </div>
 
-        // Estado para guardar referências dos grids e dados processados
-        let matutinoGrid, vespertinoGrid;
-        let secMat, secVesp;
-        let filterBar;
-        let activeTurno = null; // 'matutino', 'vespertino', 'todos'
-        let searchContainer, searchInput, clearSearchBtn;
-        let allData = []; // Armazena todos os dados para filtrar
+    <!-- Filtro de dias -->
+    <div id="dayFilterBar" class="day-filter-bar">
+        <button class="btn-dia active" data-dia="todos">📌 Todos</button>
+        <button class="btn-dia" data-dia="diaria">🔁 Diária</button>
+        <button class="btn-dia" data-dia="2">Seg</button>
+        <button class="btn-dia" data-dia="3">Ter</button>
+        <button class="btn-dia" data-dia="4">Qua</button>
+        <button class="btn-dia" data-dia="5">Qui</button>
+        <button class="btn-dia" data-dia="6">Sex</button>
+    </div>
 
-        // Função para tratar CSV com possíveis aspas (parse robusto para vírgulas dentro de campos)
-        function parseCSV(csvText) {
-            const rows = [];
-            let currentRow = [];
-            let currentField = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < csvText.length; i++) {
-                const char = csvText[i];
-                const nextChar = csvText[i + 1];
-                
-                if (char === '"') {
-                    if (inQuotes && nextChar === '"') {
-                        currentField += '"';
-                        i++;
-                    } else {
-                        inQuotes = !inQuotes;
-                    }
-                } else if (char === ',' && !inQuotes) {
-                    currentRow.push(currentField.trim());
-                    currentField = '';
-                } else if (char === '\n' && !inQuotes) {
-                    currentRow.push(currentField.trim());
-                    if (currentRow.length > 0 && !(currentRow.length === 1 && currentRow[0] === '')) {
-                        rows.push(currentRow);
-                    }
-                    currentRow = [];
-                    currentField = '';
-                } else {
-                    currentField += char;
-                }
-            }
-            // Último campo se não tiver quebra de linha final
-            if (currentField !== undefined || currentRow.length) {
-                currentRow.push(currentField.trim());
-                if (currentRow.length > 0 && !(currentRow.length === 1 && currentRow[0] === '')) {
-                    rows.push(currentRow);
-                }
-            }
-            return rows;
+    <!-- Grade Presencial -->
+    <div id="grade-presencial" class="grade-content visible"></div>
+
+    <!-- Grade EAD -->
+    <div id="grade-ead" class="grade-content"></div>
+</div>
+
+<footer>
+    <img src="demalogo.png" alt="Logo DEMA Aprendiz"
+         style="height:40px;width:auto;opacity:0.9;" onerror="this.style.display='none'">
+    <p style="font-size:0.7rem;margin-top:10px;color:#004d80;">Um futuro para cada história.</p>
+</footer>
+
+<script>
+const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTKdS9Fy5s2qdtqXIWGmuzp8l3KGVwLXRa2l0QIsQf5r0G-Sm6wZ_V84-8UEHRexnHvwooUo_loVCwH/pub?output=csv';
+
+const DIAS_MAP = { '0':'Diária', '2':'Segunda-feira', '3':'Terça-feira', '4':'Quarta-feira', '5':'Quinta-feira', '6':'Sexta-feira' };
+const DIAS_KEYS = ['0','2','3','4','5','6'];
+const DIAS_ICONS = { '0':'🔁', '2':'📅', '3':'📅', '4':'📅', '5':'📅', '6':'📅' };
+
+let allData = [];
+let activeGrade = 'presencial';
+let activeDia = 'todos';
+let searchTerm = '';
+
+/* ── CSV parser ── */
+function parseCSV(csvText) {
+    const rows = [];
+    let row = [], field = '', inQ = false;
+    for (let i = 0; i < csvText.length; i++) {
+        const c = csvText[i], n = csvText[i+1];
+        if (c === '"') { if (inQ && n === '"') { field += '"'; i++; } else inQ = !inQ; }
+        else if (c === ',' && !inQ) { row.push(field.trim()); field = ''; }
+        else if (c === '\n' && !inQ) {
+            row.push(field.trim());
+            if (!(row.length === 1 && row[0] === '')) rows.push(row);
+            row = []; field = '';
+        } else field += c;
+    }
+    if (field !== '' || row.length) { row.push(field.trim()); if (!(row.length === 1 && row[0] === '')) rows.push(row); }
+    return rows;
+}
+
+/* ── Identify day + shift from CODTURMA ── */
+function extrairDiaETurno(cod) {
+    if (!cod) return { dia: '0', turno: 'M', diaLabel: 'Diária', turnoLabel: 'Matutino' };
+    const m = cod.match(/\.(\d)([MV])\./i);
+    if (!m) return { dia: '0', turno: 'M', diaLabel: 'Diária', turnoLabel: 'Matutino' };
+    const dia = m[1], turno = m[2].toUpperCase();
+    return {
+        dia,
+        turno,
+        diaLabel: DIAS_MAP[dia] || 'Outro',
+        turnoLabel: turno === 'M' ? 'Matutino' : 'Vespertino'
+    };
+}
+
+/* ── Detect Presencial / EAD ── */
+function detectarModalidade(row) {
+    const mod = (row['MODALIDADE'] || row['MODALIDADE_TURMA'] || '').toUpperCase();
+    if (mod.includes('EAD') || mod.includes('DISTANCIA') || mod.includes('DISTÂNCIA')) return 'ead';
+    const cod = (row['CODTURMA'] || '').toUpperCase();
+    if (cod.includes('EAD') || cod.includes('.E.')) return 'ead';
+    // fallback: column TURNO (existing sheet logic) — treat as presencial by default
+    return 'presencial';
+}
+
+/* ── XSS escape ── */
+function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function removerAcentos(s) {
+    return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+
+/* ── Build a sala card ── */
+function cardHTML(item) {
+    const prof   = esc(item['NOME PROFESSOR(A)'] || 'A definir');
+    const cod    = esc(item['CODTURMA'] || '---');
+    const predio = esc(item['PREDIO_NOME_TURMADISC'] || 'Local não informado');
+    const sala   = esc(item['SALA_TURMADISCIPLINA'] || '—');
+    const matric = esc(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
+    const pre    = esc(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
+    const search = removerAcentos((item['NOME PROFESSOR(A)']||'').toLowerCase());
+
+    return `<div class="sala-item" data-search="${esc(search)}">
+        <div class="info-label">Instrutor(a)</div>
+        <div class="info-value prof-name">${prof}</div>
+        <div class="info-label">Código da Turma</div>
+        <div class="info-value">${cod}</div>
+        <div class="info-label">Local</div>
+        <div class="info-value">${predio}</div>
+        <div class="info-label">Sala</div>
+        <div class="info-value sala-destaque">${sala}</div>
+        <div class="alunos-container">
+            <div class="aluno-badge matriculado">
+                <div class="aluno-badge-icon">✓</div>
+                <div class="aluno-badge-numero">${matric}</div>
+                <div class="aluno-badge-label">Matriculados</div>
+            </div>
+            <div class="aluno-badge pre-matriculado">
+                <div class="aluno-badge-icon">⏳</div>
+                <div class="aluno-badge-numero">${pre}</div>
+                <div class="aluno-badge-label">Pré-Matric.</div>
+            </div>
+        </div>
+    </div>`;
+}
+
+/* ── Build full grade HTML ── */
+function buildGradeHTML(items) {
+    // group by dia key → turno
+    const byDia = {};
+    DIAS_KEYS.forEach(k => byDia[k] = { M: [], V: [] });
+
+    items.forEach(item => {
+        const { dia, turno } = extrairDiaETurno(item['CODTURMA']);
+        const key = DIAS_KEYS.includes(dia) ? dia : '0';
+        byDia[key][turno === 'V' ? 'V' : 'M'].push(item);
+    });
+
+    let html = '';
+    DIAS_KEYS.forEach(diaKey => {
+        const mat  = byDia[diaKey].M;
+        const vesp = byDia[diaKey].V;
+        if (!mat.length && !vesp.length) return;
+
+        const total = mat.length + vesp.length;
+        const label = DIAS_MAP[diaKey] || 'Outro';
+        const icon  = DIAS_ICONS[diaKey] || '📅';
+
+        html += `<div class="dia-section" data-dia="${diaKey}">
+            <div class="dia-header">
+                <span class="dia-pill">${icon} ${label}</span>
+                <span class="dia-count">${total} turma${total !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="grid-salas">`;
+
+        if (mat.length) {
+            html += `<div class="turno-sub mat" style="grid-column:1/-1">☀️ Matutino</div>`;
+            mat.forEach(item => { html += cardHTML(item); });
+        }
+        if (vesp.length) {
+            html += `<div class="turno-sub vesp" style="grid-column:1/-1">🌅 Vespertino</div>`;
+            vesp.forEach(item => { html += cardHTML(item); });
         }
 
-        // Cria card da sala/instrutor
-        function createCard(item) {
-            const card = document.createElement('div');
-            card.className = 'sala-item';
-            
-            const nomeProfessor = item['NOME PROFESSOR(A)'] && item['NOME PROFESSOR(A)'] !== '' ? item['NOME PROFESSOR(A)'] : 'A definir';
-            const codTurma = item.CODTURMA || '---';
-            const predio = item.PREDIO_NOME_TURMADISC && item.PREDIO_NOME_TURMADISC !== '' ? item.PREDIO_NOME_TURMADISC : 'Local não informado';
-            const sala = item.SALA_TURMADISCIPLINA && item.SALA_TURMADISCIPLINA !== '' ? item.SALA_TURMADISCIPLINA : '—';
-            
-            // Novos campos de alunos
-            const alunosMatriculados = item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0';
-            const alunosPreMatriculados = item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0';
-            
-            card.innerHTML = `
-                <div class="info-label">Instrutor(a)</div>
-                <div class="info-value prof-name">${escapeHtml(nomeProfessor)}</div>
-                
-                <div class="info-label">Código da Turma</div>
-                <div class="info-value">${escapeHtml(codTurma)}</div>
-                
-                <div class="info-label">Local</div>
-                <div class="info-value">${escapeHtml(predio)}</div>
-                
-                <div class="info-label">Sala</div>
-                <div class="info-value sala-destaque">${escapeHtml(sala)}</div>
-                
-                <div class="alunos-container">
-                    <div class="aluno-badge matriculado">
-                        <div class="aluno-badge-icon">✓</div>
-                        <div class="aluno-badge-numero">${escapeHtml(alunosMatriculados)}</div>
-                        <div class="aluno-badge-label">Matriculados</div>
-                    </div>
-                    <div class="aluno-badge pre-matriculado">
-                        <div class="aluno-badge-icon">⏳</div>
-                        <div class="aluno-badge-numero">${escapeHtml(alunosPreMatriculados)}</div>
-                        <div class="aluno-badge-label">Pré-Matric.</div>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
+        html += `</div></div>`;
+    });
 
-        // Prevenção básica contra XSS
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-                return c;
-            });
-        }
+    if (!html) {
+        html = `<div style="text-align:center;color:rgba(255,255,255,0.7);padding:40px;font-weight:600;">
+                    Nenhuma turma encontrada para esta grade.</div>`;
+    }
+    return html;
+}
 
-        // Remove acentos e caracteres especiais para busca
-        function removerAcentos(str) {
-            if (!str) return '';
-            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        }
+/* ── Render both grades ── */
+function renderAll() {
+    const presItems = allData.filter(r => detectarModalidade(r) === 'presencial');
+    const eadItems  = allData.filter(r => detectarModalidade(r) === 'ead');
 
-        // Verifica grids vazios e insere mensagem amigável
-        function handleEmptyGrids() {
-            if (matutinoGrid.children.length === 0) {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'empty-message';
-                emptyDiv.innerHTML = '📭 Nenhuma turma encontrada para o turno Matutino.';
-                matutinoGrid.appendChild(emptyDiv);
-            }
-            if (vespertinoGrid.children.length === 0) {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'empty-message';
-                emptyDiv.innerHTML = '📭 Nenhuma turma encontrada para o turno Vespertino.';
-                vespertinoGrid.appendChild(emptyDiv);
-            }
-        }
+    document.getElementById('grade-presencial').innerHTML = buildGradeHTML(presItems);
+    document.getElementById('grade-ead').innerHTML        = buildGradeHTML(eadItems);
 
-        // Mostra/esconde seções baseado no turno ativo (etapa de escolha)
-        function updateVisibilityByTurno(turno) {
-            // Esconder ambas as seções primeiro
-            secMat.style.display = 'none';
-            secVesp.style.display = 'none';
-            
-            if (turno === 'matutino') {
-                secMat.style.display = 'block';
-            } else if (turno === 'vespertino') {
-                secVesp.style.display = 'block';
-            } else if (turno === 'todos') {
-                secMat.style.display = 'block';
-                secVesp.style.display = 'block';
-            }
-        }
+    document.getElementById('badge-presencial').textContent = presItems.length;
+    document.getElementById('badge-ead').textContent        = eadItems.length;
 
-        // Atualiza estado visual dos botões
-        function setActiveButton(turno) {
-            const buttons = document.querySelectorAll('.btn-turno');
-            buttons.forEach(btn => {
-                const btnTurno = btn.getAttribute('data-turno');
-                if (btnTurno === turno) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
+    applyFilters();
+}
 
-        // Função principal de renderização após carregar dados
-        function renderizar(dados, searchTerm = '') {
-            // Limpar grids para não duplicar (caso recarregue)
-            matutinoGrid.innerHTML = '';
-            vespertinoGrid.innerHTML = '';
-            
-            let matCount = 0, vespCount = 0;
-            
-            // Filtrar dados por nome do instrutor se houver termo de busca
-            let dadosFiltrados = dados;
-            if (searchTerm.trim() !== '') {
-                // Normaliza o termo de busca: remove acentos e converte para minúsculas
-                const termoBusca = removerAcentos(searchTerm.toLowerCase().trim());
-                
-                dadosFiltrados = dados.filter(item => {
-                    const nomeProf = item['NOME PROFESSOR(A)'] || '';
-                    // Normaliza o nome do professor: remove acentos e converte para minúsculas
-                    const nomeProfNormalizado = removerAcentos(nomeProf.toLowerCase());
-                    return nomeProfNormalizado.includes(termoBusca);
-                });
+/* ── Apply active grade + day + search ── */
+function applyFilters() {
+    // show/hide grade panels
+    document.querySelectorAll('.grade-content').forEach(el => {
+        el.classList.toggle('visible', el.id === 'grade-' + activeGrade);
+    });
+
+    const activePanel = document.getElementById('grade-' + activeGrade);
+    if (!activePanel) return;
+
+    const term = removerAcentos(searchTerm.toLowerCase().trim());
+
+    // filter dia sections
+    activePanel.querySelectorAll('.dia-section').forEach(sec => {
+        const diaKey = sec.getAttribute('data-dia');
+        const diaMatch = activeDia === 'todos'
+            || (activeDia === 'diaria' && diaKey === '0')
+            || activeDia === diaKey;
+        sec.classList.toggle('hidden', !diaMatch);
+    });
+
+    // filter cards by search
+    let visibleCount = 0;
+    activePanel.querySelectorAll('.sala-item').forEach(card => {
+        const s = card.getAttribute('data-search') || '';
+        const match = !term || s.includes(term);
+        card.classList.toggle('hidden', !match);
+        if (match) visibleCount++;
+    });
+
+    // show/hide empty messages inside each grid
+    activePanel.querySelectorAll('.grid-salas').forEach(grid => {
+        const hasVisible = Array.from(grid.querySelectorAll('.sala-item')).some(c => !c.classList.contains('hidden'));
+        let emptyEl = grid.querySelector('.empty-message');
+        if (!hasVisible) {
+            if (!emptyEl) {
+                emptyEl = document.createElement('div');
+                emptyEl.className = 'empty-message';
+                emptyEl.textContent = '📭 Nenhuma turma encontrada.';
+                grid.appendChild(emptyEl);
             }
-            
-            dadosFiltrados.forEach(item => {
-                if (!item.CODTURMA) return; // ignora linhas inválidas
-                
-                const turnoRaw = item.TURNO ? item.TURNO.toUpperCase().trim() : '';
-                let turnoIdentificado = '';
-                
-                if (turnoRaw.includes('MATUTINO') || turnoRaw === 'M') {
-                    turnoIdentificado = 'matutino';
-                } else if (turnoRaw.includes('VESPERTINO') || turnoRaw === 'V') {
-                    turnoIdentificado = 'vespertino';
-                } else {
-                    return; // turno não reconhecido, ignora
-                }
-                
-                const card = createCard(item);
-                
-                if (turnoIdentificado === 'matutino') {
-                    matutinoGrid.appendChild(card);
-                    matCount++;
-                } else if (turnoIdentificado === 'vespertino') {
-                    vespertinoGrid.appendChild(card);
-                    vespCount++;
-                }
-            });
-            
-            // Adiciona mensagens caso algum grid fique vazio
-            handleEmptyGrids();
-            
-            // Exibe o painel de filtros e busca após dados carregados
-            filterBar.style.display = 'flex';
-            searchContainer.style.display = 'flex';
-            const loadingDiv = document.getElementById('loading');
-            if (loadingDiv) loadingDiv.style.display = 'none';
-            
-            // Se houver dados mas ainda não houver escolha, definir padrão como "todos" (opcional)
-            // mas mantemos sem seleção automática para que o usuário escolha.
-            // Porém, para não deixar seções visíveis antes da escolha, garantimos que ambas estão ocultas
-            secMat.style.display = 'none';
-            secVesp.style.display = 'none';
-            
-            // Se o usuário já tinha um filtro ativo antes (ex: recarregou), restaura? por simplicidade inicia neutro.
-            if (!activeTurno) {
-                activeTurno = null;
-                setActiveButton(null);
-            } else {
-                // Mantém o turno ativo se já existir
-                updateVisibilityByTurno(activeTurno);
-                setActiveButton(activeTurno);
-            }
+        } else {
+            if (emptyEl) emptyEl.remove();
         }
-        
-        // Carrega os dados da planilha
-        async function carregarDados() {
-            try {
-                const response = await fetch(URL_PLANILHA);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const csvText = await response.text();
-                
-                // Parse CSV robusto
-                const rows = parseCSV(csvText);
-                if (rows.length < 2) throw new Error('Planilha sem dados suficientes');
-                
-                const headers = rows[0].map(h => h.replace(/^"|"$/g, '').trim());
-                const items = [];
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    const obj = {};
-                    headers.forEach((header, idx) => {
-                        let val = (row[idx] !== undefined) ? row[idx] : '';
-                        val = val.replace(/^"|"$/g, '').trim();
-                        obj[header] = val;
-                    });
-                    // Só adiciona se tiver código de turma ou ao menos algum campo relevante
-                    if (obj.CODTURMA && obj.CODTURMA !== '') {
-                        items.push(obj);
-                    }
-                }
-                
-                if (items.length === 0) {
-                    throw new Error('Nenhuma turma válida encontrada na planilha.');
-                }
-                
-                // Salvar dados globalmente para filtros
-                allData = items;
-                renderizar(allData);
-            } catch (error) {
-                console.error('Erro ao carregar planilha:', error);
-                const loadingDiv = document.getElementById('loading');
-                if (loadingDiv) {
-                    loadingDiv.innerHTML = '⚠️ Erro ao carregar os dados. Verifique a conexão ou tente novamente mais tarde.<br><small>' + error.message + '</small>';
-                    loadingDiv.style.background = 'rgba(220,53,69,0.8)';
-                    loadingDiv.style.borderRadius = '24px';
-                }
-                // esconde filtros em caso de erro crítico
-                if (filterBar) filterBar.style.display = 'none';
-                if (searchContainer) searchContainer.style.display = 'none';
-            }
-        }
-        
-        // Configura os eventos dos botões (etapa interativa)
-        function setupFilterEvents() {
-            const btnMatutino = document.querySelector('.btn-turno[data-turno="matutino"]');
-            const btnVespertino = document.querySelector('.btn-turno[data-turno="vespertino"]');
-            const btnTodos = document.querySelector('.btn-turno[data-turno="todos"]');
-            
-            if (btnMatutino) {
-                btnMatutino.addEventListener('click', () => {
-                    activeTurno = 'matutino';
-                    updateVisibilityByTurno('matutino');
-                    setActiveButton('matutino');
-                });
-            }
-            if (btnVespertino) {
-                btnVespertino.addEventListener('click', () => {
-                    activeTurno = 'vespertino';
-                    updateVisibilityByTurno('vespertino');
-                    setActiveButton('vespertino');
-                });
-            }
-            if (btnTodos) {
-                btnTodos.addEventListener('click', () => {
-                    activeTurno = 'todos';
-                    updateVisibilityByTurno('todos');
-                    setActiveButton('todos');
-                });
-            }
-        }
-        
-        // Configura eventos de busca
-        function setupSearchEvents() {
-            if (!searchInput || !clearSearchBtn) return;
-            
-            // Evento de digitação com debounce
-            let searchTimeout;
-            searchInput.addEventListener('input', (e) => {
-                const value = e.target.value;
-                
-                // Mostrar/ocultar botão limpar
-                if (value.trim() !== '') {
-                    clearSearchBtn.classList.add('visible');
-                } else {
-                    clearSearchBtn.classList.remove('visible');
-                }
-                
-                // Debounce para não filtrar a cada tecla
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    renderizar(allData, value);
-                }, 300);
-            });
-            
-            // Botão limpar busca
-            clearSearchBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                clearSearchBtn.classList.remove('visible');
-                renderizar(allData, '');
-                searchInput.focus();
-            });
-            
-            // Limpar com ESC
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    searchInput.value = '';
-                    clearSearchBtn.classList.remove('visible');
-                    renderizar(allData, '');
-                }
-            });
-        }
-        
-        // Aguardar o DOM e iniciar tudo
-        window.addEventListener('DOMContentLoaded', () => {
-            matutinoGrid = document.getElementById('grid-matutino');
-            vespertinoGrid = document.getElementById('grid-vespertino');
-            secMat = document.getElementById('section-matutino');
-            secVesp = document.getElementById('section-vespertino');
-            filterBar = document.getElementById('filterBar');
-            searchContainer = document.getElementById('searchContainer');
-            searchInput = document.getElementById('searchInput');
-            clearSearchBtn = document.getElementById('clearSearch');
-            
-            // Inicialmente esconder seções e aguardar dados
-            if (secMat) secMat.style.display = 'none';
-            if (secVesp) secVesp.style.display = 'none';
-            if (filterBar) filterBar.style.display = 'none';
-            if (searchContainer) searchContainer.style.display = 'none';
-            
-            // Carregar os dados
-            carregarDados().then(() => {
-                // Após carregar, configurar eventos dos filtros e busca
-                setupFilterEvents();
-                setupSearchEvents();
-                // Opcional: se desejar exibir uma mensagem de boas-vindas, o usuário agora escolhe o turno
-                // Dica visual: o painel de botões já aparece, aguardando ação.
-            }).catch(err => {
-                console.warn("Falha na inicialização:", err);
-            });
+    });
+
+    // search result info
+    const infoEl = document.getElementById('searchResultInfo');
+    if (term) {
+        infoEl.textContent = `${visibleCount} resultado${visibleCount !== 1 ? 's' : ''} para "${searchTerm}"`;
+        infoEl.classList.add('visible');
+    } else {
+        infoEl.classList.remove('visible');
+    }
+}
+
+/* ── Event wiring ── */
+function setupEvents() {
+    // Grade tabs
+    document.querySelectorAll('.grade-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeGrade = btn.getAttribute('data-grade');
+            document.querySelectorAll('.grade-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
         });
-    </script>
+    });
+
+    // Day filter
+    document.querySelectorAll('.btn-dia').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeDia = btn.getAttribute('data-dia');
+            document.querySelectorAll('.btn-dia').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+        });
+    });
+
+    // Search
+    const searchInput  = document.getElementById('searchInput');
+    const clearBtn     = document.getElementById('clearSearch');
+    let debounce;
+
+    searchInput.addEventListener('input', e => {
+        searchTerm = e.target.value;
+        clearBtn.classList.toggle('visible', searchTerm.trim() !== '');
+        clearTimeout(debounce);
+        debounce = setTimeout(applyFilters, 260);
+    });
+
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchTerm = '';
+        clearBtn.classList.remove('visible');
+        applyFilters();
+        searchInput.focus();
+    });
+
+    searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            searchInput.value = '';
+            searchTerm = '';
+            clearBtn.classList.remove('visible');
+            applyFilters();
+        }
+    });
+}
+
+/* ── Load data ── */
+async function carregarDados() {
+    try {
+        const res = await fetch(URL_PLANILHA);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const csv = await res.text();
+
+        const rows = parseCSV(csv);
+        if (rows.length < 2) throw new Error('Planilha sem dados suficientes');
+
+        const headers = rows[0].map(h => h.replace(/^"|"$/g,'').trim());
+        const items = [];
+
+        for (let i = 1; i < rows.length; i++) {
+            const obj = {};
+            headers.forEach((h, idx) => {
+                obj[h] = (rows[i][idx] || '').replace(/^"|"$/g,'').trim();
+            });
+            if (obj['CODTURMA']) items.push(obj);
+        }
+
+        if (!items.length) throw new Error('Nenhuma turma válida encontrada.');
+
+        allData = items;
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('searchContainer').style.display = 'flex';
+        document.getElementById('gradeTabs').style.display     = 'flex';
+        document.getElementById('dayFilterBar').style.display  = 'flex';
+
+        renderAll();
+        setupEvents();
+
+    } catch (err) {
+        console.error(err);
+        const l = document.getElementById('loading');
+        l.innerHTML = '⚠️ Erro ao carregar os dados. Verifique a conexão ou tente novamente.<br><small>' + err.message + '</small>';
+        l.style.background = 'rgba(220,53,69,0.8)';
+        l.style.borderRadius = '24px';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', carregarDados);
+</script>
 </body>
 </html>
