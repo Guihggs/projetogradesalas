@@ -465,7 +465,8 @@ function detectarModalidade(row) {
     if (mod.includes('EAD') || mod.includes('DISTANCIA') || mod.includes('DISTÂNCIA')) return 'ead';
     const cod = (row['CODTURMA'] || '').toUpperCase();
     if (cod.includes('EAD') || cod.includes('.E.')) return 'ead';
-    // fallback: column TURNO (existing sheet logic) — treat as presencial by default
+    const predio = (row['PREDIO_NOME_TURMADISC'] || '').toUpperCase().trim();
+    if (predio.includes('APRENDIZAGEM CONECTADA')) return 'ead';
     return 'presencial';
 }
 
