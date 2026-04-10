@@ -94,48 +94,65 @@
         .clear-search:hover { background: rgba(255,255,255,0.4); transform: rotate(90deg); }
         .clear-search.visible { display: flex; }
 
-        /* ── GRADE TABS ── */
-        .grade-tabs {
+        /* ── PRÉDIO SELECT ── */
+        .predio-filter-container {
             display: none;
+            align-items: center;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
         }
-        .grade-tab {
-            flex: 1;
-            min-width: 140px;
-            background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.25);
-            border-radius: 16px;
-            padding: 14px 20px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            color: white;
-            font-family: inherit;
-            font-size: 1rem;
+        .predio-label {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.88rem;
             font-weight: 700;
-            letter-spacing: 0.4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            backdrop-filter: blur(4px);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
-        .grade-tab:hover { background: rgba(255,255,255,0.28); transform: translateY(-2px); }
-        .grade-tab.active {
+        .predio-select-wrapper {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+        .predio-select {
+            width: 100%;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(6px);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 48px;
+            padding: 10px 44px 10px 20px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: all 0.2s ease;
+        }
+        .predio-select:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.5); }
+        .predio-select:focus { border-color: var(--amarelo-jc); background: rgba(255,255,255,0.2); }
+        .predio-select option { background: var(--azul-escuro); color: white; font-weight: 600; }
+        .select-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--amarelo-jc);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        .predio-badge-count {
             background: var(--amarelo-jc);
             color: var(--azul-escuro);
-            border-color: var(--amarelo-jc);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-        }
-        .grade-tab .tab-badge {
-            background: rgba(0,0,0,0.12);
-            border-radius: 20px;
-            padding: 2px 9px;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
         }
-        .grade-tab.active .tab-badge { background: rgba(0,51,102,0.15); }
 
         /* ── DAY FILTER BAR ── */
         .day-filter-bar {
@@ -167,9 +184,8 @@
         .btn-dia:hover { background: rgba(255,255,255,0.2); color: white; }
         .btn-dia.active { background: var(--azul-escuro); color: var(--amarelo-jc); box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
 
-        /* ── TURNO SECTIONS ── */
-        .grade-content { display: none; animation: fadeSlideUp 0.3s ease-out; }
-        .grade-content.visible { display: block; }
+        /* ── MAIN CONTENT ── */
+        .grade-content { animation: fadeSlideUp 0.3s ease-out; }
 
         .dia-section { margin-bottom: 32px; }
         .dia-section.hidden { display: none; }
@@ -201,7 +217,6 @@
             backdrop-filter: blur(2px);
         }
 
-        /* turno sub-header */
         .turno-sub {
             display: flex;
             align-items: center;
@@ -334,6 +349,17 @@
         }
         .search-result-info.visible { display: block; }
 
+        /* ── NO RESULTS FULL ── */
+        .no-results-full {
+            display: none;
+            text-align: center;
+            color: rgba(255,255,255,0.75);
+            padding: 48px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .no-results-full.visible { display: block; }
+
         /* ── FOOTER ── */
         footer {
             background: var(--amarelo-jc);
@@ -350,12 +376,13 @@
 
         @media (max-width: 640px) {
             .header-content { flex-direction: column; text-align: center; }
-            .grade-tab { min-width: 120px; font-size: 0.9rem; padding: 11px 14px; }
             .btn-dia { padding: 7px 13px; font-size: 0.82rem; }
             .grid-salas { padding: 14px; gap: 14px; }
             .dia-pill { font-size: 0.9rem; padding: 7px 16px; }
             .search-container { padding: 10px 14px; }
             .search-input { font-size: 1rem; }
+            .predio-filter-container { flex-direction: column; align-items: stretch; }
+            .predio-label { text-align: center; }
         }
     </style>
 </head>
@@ -371,7 +398,7 @@
 <div class="container">
     <div id="loading" class="loading">📅 Buscando turmas e salas...</div>
 
-    <!-- Busca -->
+    <!-- Busca por instrutor -->
     <div id="searchContainer" class="search-container">
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" class="search-input"
@@ -381,14 +408,16 @@
 
     <div id="searchResultInfo" class="search-result-info"></div>
 
-    <!-- Tabs Presencial / EAD -->
-    <div id="gradeTabs" class="grade-tabs">
-        <button class="grade-tab active" data-grade="presencial">
-            🏫 Presencial <span class="tab-badge" id="badge-presencial">0</span>
-        </button>
-        <button class="grade-tab" data-grade="ead">
-            💻 EAD <span class="tab-badge" id="badge-ead">0</span>
-        </button>
+    <!-- Filtro por Prédio -->
+    <div id="predioFilterContainer" class="predio-filter-container">
+        <span class="predio-label">🏢 Prédio</span>
+        <div class="predio-select-wrapper">
+            <select id="predioSelect" class="predio-select">
+                <option value="todos">Todos os prédios</option>
+            </select>
+            <span class="select-arrow">▾</span>
+        </div>
+        <span id="predioBadge" class="predio-badge-count">0 turmas</span>
     </div>
 
     <!-- Filtro de dias -->
@@ -402,11 +431,9 @@
         <button class="btn-dia" data-dia="6">Sex</button>
     </div>
 
-    <!-- Grade Presencial -->
-    <div id="grade-presencial" class="grade-content visible"></div>
-
-    <!-- Grade EAD -->
-    <div id="grade-ead" class="grade-content"></div>
+    <!-- Conteúdo principal -->
+    <div id="gradeContent" class="grade-content"></div>
+    <div id="noResults" class="no-results-full">📭 Nenhuma turma encontrada para os filtros selecionados.</div>
 </div>
 
 <footer>
@@ -418,14 +445,15 @@
 <script>
 const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTKdS9Fy5s2qdtqXIWGmuzp8l3KGVwLXRa2l0QIsQf5r0G-Sm6wZ_V84-8UEHRexnHvwooUo_loVCwH/pub?output=csv';
 
-const DIAS_MAP = { '0':'Diária', '2':'Segunda-feira', '3':'Terça-feira', '4':'Quarta-feira', '5':'Quinta-feira', '6':'Sexta-feira' };
+const DIAS_MAP  = { '0':'Diária', '2':'Segunda-feira', '3':'Terça-feira', '4':'Quarta-feira', '5':'Quinta-feira', '6':'Sexta-feira' };
 const DIAS_KEYS = ['0','2','3','4','5','6'];
-const DIAS_ICONS = { '0':'🔁', '2':'📅', '3':'📅', '4':'📅', '5':'📅', '6':'📅' };
+const DIAS_ICONS= { '0':'🔁', '2':'📅', '3':'📅', '4':'📅', '5':'📅', '6':'📅' };
 
-let allData = [];
-let activeGrade = 'presencial';
-let activeDia = 'todos';
+let allData    = [];
+let activeDia  = 'todos';
+let activePred = 'todos';
 let searchTerm = '';
+let predioList = []; // lista ordenada de prédios únicos
 
 /* ── CSV parser ── */
 function parseCSV(csvText) {
@@ -447,27 +475,15 @@ function parseCSV(csvText) {
 
 /* ── Identify day + shift from CODTURMA ── */
 function extrairDiaETurno(cod) {
-    if (!cod) return { dia: '0', turno: 'M', diaLabel: 'Diária', turnoLabel: 'Matutino' };
+    if (!cod) return { dia: '0', turno: 'M' };
     const m = cod.match(/\.(\d)([MV])\./i);
-    if (!m) return { dia: '0', turno: 'M', diaLabel: 'Diária', turnoLabel: 'Matutino' };
-    const dia = m[1], turno = m[2].toUpperCase();
-    return {
-        dia,
-        turno,
-        diaLabel: DIAS_MAP[dia] || 'Outro',
-        turnoLabel: turno === 'M' ? 'Matutino' : 'Vespertino'
-    };
+    if (!m) return { dia: '0', turno: 'M' };
+    return { dia: m[1], turno: m[2].toUpperCase() };
 }
 
-/* ── Detect Presencial / EAD ── */
-function detectarModalidade(row) {
-    const mod = (row['MODALIDADE'] || row['MODALIDADE_TURMA'] || '').toUpperCase();
-    if (mod.includes('EAD') || mod.includes('DISTANCIA') || mod.includes('DISTÂNCIA')) return 'ead';
-    const cod = (row['CODTURMA'] || '').toUpperCase();
-    if (cod.includes('EAD') || cod.includes('.E.')) return 'ead';
-    const predio = (row['PREDIO_NOME_TURMADISC'] || '').toUpperCase().trim();
-    if (predio.includes('APRENDIZAGEM CONECTADA')) return 'ead';
-    return 'presencial';
+/* ── Normalize prédio name ── */
+function normalizarPredio(s) {
+    return (s || '').trim() || 'Não informado';
 }
 
 /* ── XSS escape ── */
@@ -482,22 +498,23 @@ function removerAcentos(s) {
 
 /* ── Build a sala card ── */
 function cardHTML(item) {
-    const prof       = esc(item['NOME PROFESSOR(A)'] || 'A definir');
-    const cod        = esc(item['CODTURMA'] || '---');
-    const turmaNome  = esc(item['TURMA NOME'] || '');
-    const predio     = esc(item['PREDIO_NOME_TURMADISC'] || 'Local não informado');
-    const sala       = esc(item['SALA_TURMADISCIPLINA'] || '—');
-    const matric     = esc(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
-    const pre        = esc(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
-    const search     = removerAcentos((item['NOME PROFESSOR(A)']||'').toLowerCase());
+    const prof      = esc(item['NOME PROFESSOR(A)'] || 'A definir');
+    const cod       = esc(item['CODTURMA'] || '---');
+    const turmaNome = esc(item['TURMA NOME'] || '');
+    const predio    = esc(item['PREDIO_NOME_TURMADISC'] || 'Local não informado');
+    const sala      = esc(item['SALA_TURMADISCIPLINA'] || '—');
+    const matric    = esc(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
+    const pre       = esc(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
+    const search    = removerAcentos((item['NOME PROFESSOR(A)']||'').toLowerCase());
+    const predioKey = esc(normalizarPredio(item['PREDIO_NOME_TURMADISC']));
 
-    return `<div class="sala-item" data-search="${esc(search)}">
+    return `<div class="sala-item" data-search="${esc(search)}" data-predio="${predioKey}">
         <div class="info-label">Instrutor(a)</div>
         <div class="info-value prof-name">${prof}</div>
         <div class="info-label">Código da Turma</div>
         <div class="info-value">${cod}</div>
         ${turmaNome ? `<div class="info-label">Nome da Turma</div><div class="info-value">${turmaNome}</div>` : ''}
-        <div class="info-label">Local</div>
+        <div class="info-label">Prédio</div>
         <div class="info-value">${predio}</div>
         <div class="info-label">Sala</div>
         <div class="info-value sala-destaque">${sala}</div>
@@ -518,7 +535,6 @@ function cardHTML(item) {
 
 /* ── Build full grade HTML ── */
 function buildGradeHTML(items) {
-    // group by dia key → turno
     const byDia = {};
     DIAS_KEYS.forEach(k => byDia[k] = { M: [], V: [] });
 
@@ -557,41 +573,41 @@ function buildGradeHTML(items) {
         html += `</div></div>`;
     });
 
-    if (!html) {
-        html = `<div style="text-align:center;color:rgba(255,255,255,0.7);padding:40px;font-weight:600;">
-                    Nenhuma turma encontrada para esta grade.</div>`;
-    }
     return html;
 }
 
-/* ── Render both grades ── */
+/* ── Populate prédio select ── */
+function popularSelectPredios() {
+    const set = new Set();
+    allData.forEach(item => set.add(normalizarPredio(item['PREDIO_NOME_TURMADISC'])));
+    predioList = Array.from(set).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    const sel = document.getElementById('predioSelect');
+    // limpa opções extras
+    while (sel.options.length > 1) sel.remove(1);
+
+    predioList.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        sel.appendChild(opt);
+    });
+}
+
+/* ── Render all data into main content ── */
 function renderAll() {
-    const presItems = allData.filter(r => detectarModalidade(r) === 'presencial');
-    const eadItems  = allData.filter(r => detectarModalidade(r) === 'ead');
-
-    document.getElementById('grade-presencial').innerHTML = buildGradeHTML(presItems);
-    document.getElementById('grade-ead').innerHTML        = buildGradeHTML(eadItems);
-
-    document.getElementById('badge-presencial').textContent = presItems.length;
-    document.getElementById('badge-ead').textContent        = eadItems.length;
-
+    document.getElementById('gradeContent').innerHTML = buildGradeHTML(allData);
+    popularSelectPredios();
     applyFilters();
 }
 
-/* ── Apply active grade + day + search ── */
+/* ── Apply day + prédio + search filters ── */
 function applyFilters() {
-    // show/hide grade panels
-    document.querySelectorAll('.grade-content').forEach(el => {
-        el.classList.toggle('visible', el.id === 'grade-' + activeGrade);
-    });
+    const panel = document.getElementById('gradeContent');
+    const term  = removerAcentos(searchTerm.toLowerCase().trim());
 
-    const activePanel = document.getElementById('grade-' + activeGrade);
-    if (!activePanel) return;
-
-    const term = removerAcentos(searchTerm.toLowerCase().trim());
-
-    // filter dia sections
-    activePanel.querySelectorAll('.dia-section').forEach(sec => {
+    // filtro de dia: mostrar/ocultar seções
+    panel.querySelectorAll('.dia-section').forEach(sec => {
         const diaKey = sec.getAttribute('data-dia');
         const diaMatch = activeDia === 'todos'
             || (activeDia === 'diaria' && diaKey === '0')
@@ -599,30 +615,49 @@ function applyFilters() {
         sec.classList.toggle('hidden', !diaMatch);
     });
 
-    // filter cards by search
+    // filtro de prédio + busca: mostrar/ocultar cards
     let visibleCount = 0;
-    activePanel.querySelectorAll('.sala-item').forEach(card => {
+    panel.querySelectorAll('.sala-item').forEach(card => {
+        const cardPredi = card.getAttribute('data-predio') || '';
+        const predMatch = activePred === 'todos' || cardPredi === activePred;
         const s = card.getAttribute('data-search') || '';
-        const match = !term || s.includes(term);
-        card.classList.toggle('hidden', !match);
-        if (match) visibleCount++;
+        const termMatch = !term || s.includes(term);
+        const visible = predMatch && termMatch;
+        card.classList.toggle('hidden', !visible);
+        if (visible) visibleCount++;
     });
 
-    // show/hide empty messages inside each grid
-    activePanel.querySelectorAll('.grid-salas').forEach(grid => {
-        const hasVisible = Array.from(grid.querySelectorAll('.sala-item')).some(c => !c.classList.contains('hidden'));
+    // empty message por grid
+    panel.querySelectorAll('.grid-salas').forEach(grid => {
+        const hasVisible = Array.from(grid.querySelectorAll('.sala-item'))
+            .some(c => !c.classList.contains('hidden'));
         let emptyEl = grid.querySelector('.empty-message');
         if (!hasVisible) {
             if (!emptyEl) {
                 emptyEl = document.createElement('div');
                 emptyEl.className = 'empty-message';
-                emptyEl.textContent = '📭 Nenhuma turma encontrada.';
+                emptyEl.textContent = '📭 Nenhuma turma neste dia.';
                 grid.appendChild(emptyEl);
             }
         } else {
             if (emptyEl) emptyEl.remove();
         }
     });
+
+    // ocultar seções de dia inteiramente se todos os grids ficaram vazios
+    panel.querySelectorAll('.dia-section:not(.hidden)').forEach(sec => {
+        const allHidden = Array.from(sec.querySelectorAll('.sala-item'))
+            .every(c => c.classList.contains('hidden'));
+        if (allHidden) sec.classList.add('hidden');
+    });
+
+    // mensagem geral sem resultados
+    const noRes = document.getElementById('noResults');
+    noRes.classList.toggle('visible', visibleCount === 0);
+
+    // badge de contagem do prédio selecionado
+    document.getElementById('predioBadge').textContent =
+        `${visibleCount} turma${visibleCount !== 1 ? 's' : ''}`;
 
     // search result info
     const infoEl = document.getElementById('searchResultInfo');
@@ -636,14 +671,10 @@ function applyFilters() {
 
 /* ── Event wiring ── */
 function setupEvents() {
-    // Grade tabs
-    document.querySelectorAll('.grade-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-            activeGrade = btn.getAttribute('data-grade');
-            document.querySelectorAll('.grade-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            applyFilters();
-        });
+    // Filtro por prédio
+    document.getElementById('predioSelect').addEventListener('change', e => {
+        activePred = e.target.value;
+        applyFilters();
     });
 
     // Day filter
@@ -657,8 +688,8 @@ function setupEvents() {
     });
 
     // Search
-    const searchInput  = document.getElementById('searchInput');
-    const clearBtn     = document.getElementById('clearSearch');
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn    = document.getElementById('clearSearch');
     let debounce;
 
     searchInput.addEventListener('input', e => {
@@ -712,9 +743,9 @@ async function carregarDados() {
         allData = items;
 
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('searchContainer').style.display = 'flex';
-        document.getElementById('gradeTabs').style.display     = 'flex';
-        document.getElementById('dayFilterBar').style.display  = 'flex';
+        document.getElementById('searchContainer').style.display      = 'flex';
+        document.getElementById('predioFilterContainer').style.display = 'flex';
+        document.getElementById('dayFilterBar').style.display          = 'flex';
 
         renderAll();
         setupEvents();
