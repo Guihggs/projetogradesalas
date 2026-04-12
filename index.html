@@ -417,7 +417,7 @@
             </select>
             <span class="select-arrow">▾</span>
         </div>
-        <span id="predioBadge" class="predio-badge-count">0 turmas</span>
+        <span id="predioBadge" class="predio-badge-count">0 salas</span>
     </div>
 
     <!-- Filtro de dias -->
@@ -433,7 +433,7 @@
 
     <!-- Conteúdo principal -->
     <div id="gradeContent" class="grade-content"></div>
-    <div id="noResults" class="no-results-full">📭 Nenhuma turma encontrada para os filtros selecionados.</div>
+    <div id="noResults" class="no-results-full">📭 Nenhuma sala encontrada para os filtros selecionados.</div>
 </div>
 
 <footer>
@@ -496,78 +496,145 @@ function removerAcentos(s) {
     return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 }
 
-/* ── Build a sala card ── */
-function cardHTML(item) {
-    const prof      = esc(item['NOME PROFESSOR(A)'] || 'A definir');
-    const cod       = esc(item['CODTURMA'] || '---');
-    const turmaNome = esc(item['TURMA NOME'] || '');
-    const predio    = esc(item['PREDIO_NOME_TURMADISC'] || 'Local não informado');
-    const sala      = esc(item['SALA_TURMADISCIPLINA'] || '—');
-    const matric    = esc(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
-    const pre       = esc(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
-    const search    = removerAcentos((item['NOME PROFESSOR(A)']||'').toLowerCase());
-    const predioKey = esc(normalizarPredio(item['PREDIO_NOME_TURMADISC']));
-
-    return `<div class="sala-item" data-search="${esc(search)}" data-predio="${predioKey}">
-        <div class="info-label">Instrutor(a)</div>
-        <div class="info-value prof-name">${prof}</div>
-        <div class="info-label">Código da Turma</div>
-        <div class="info-value">${cod}</div>
-        ${turmaNome ? `<div class="info-label">Nome da Turma</div><div class="info-value">${turmaNome}</div>` : ''}
-        <div class="info-label">Prédio</div>
+/* ── Build a sala card (agora suporta múltiplas turmas agrupadas) ── */
+function cardHTML(items) {
+    // Se for um único item, converte para array
+    if (!Array.isArray(items)) items = [items];
+    
+    // Pega informações comuns (primeira turma)
+    const first = items[0];
+    const predio    = esc(first['PREDIO_NOME_TURMADISC'] || 'Local não informado');
+    const sala      = esc(first['SALA_TURMADISCIPLINA'] || '—');
+    const predioKey = esc(normalizarPredio(first['PREDIO_NOME_TURMADISC']));
+    
+    // Cria string de busca com todos os professores
+    const searchTerms = items.map(i => removerAcentos((i['NOME PROFESSOR(A)']||'').toLowerCase())).join(' ');
+    
+    // Verifica se todos os instrutores são iguais
+    const instrutores = [...new Set(items.map(i => i['NOME PROFESSOR(A)'] || 'A definir'))];
+    const instrutorUnico = instrutores.length === 1;
+    
+    // Soma total de alunos
+    const totalMatric = items.reduce((sum, i) => sum + parseInt(i['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0'), 0);
+    const totalPre = items.reduce((sum, i) => sum + parseInt(i['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0'), 0);
+    
+    let html = `<div class="sala-item" data-search="${esc(searchTerms)}" data-predio="${predioKey}">`;
+    
+    // Cabeçalho: Prédio e Sala (sempre únicos)
+    html += `<div class="info-label">Prédio</div>
         <div class="info-value">${predio}</div>
         <div class="info-label">Sala</div>
-        <div class="info-value sala-destaque">${sala}</div>
-        <div class="alunos-container">
-            <div class="aluno-badge matriculado">
-                <div class="aluno-badge-icon">✓</div>
-                <div class="aluno-badge-numero">${matric}</div>
-                <div class="aluno-badge-label">Matriculados</div>
-            </div>
-            <div class="aluno-badge pre-matriculado">
-                <div class="aluno-badge-icon">⏳</div>
-                <div class="aluno-badge-numero">${pre}</div>
-                <div class="aluno-badge-label">Pré-Matric.</div>
-            </div>
+        <div class="info-value sala-destaque">${sala}</div>`;
+    
+    // Se houver múltiplas turmas, exibe contador
+    if (items.length > 1) {
+        html += `<div style="background:#e3f2fd;padding:6px 10px;border-radius:8px;margin:8px 0;text-align:center;font-size:0.75rem;font-weight:700;color:#1976d2;">
+            📚 ${items.length} turmas nesta sala
+        </div>`;
+    }
+    
+    // Se instrutor for único, exibe uma vez só
+    if (instrutorUnico) {
+        html += `<div class="info-label">Instrutor(a)</div>
+            <div class="info-value prof-name">${esc(instrutores[0])}</div>`;
+    }
+    
+    // Exibe informações de cada turma
+    items.forEach((item, idx) => {
+        const prof      = esc(item['NOME PROFESSOR(A)'] || 'A definir');
+        const cod       = esc(item['CODTURMA'] || '---');
+        const turmaNome = esc(item['TURMA NOME'] || '');
+        
+        // Separador entre turmas (se houver mais de uma)
+        if (items.length > 1 && idx > 0) {
+            html += `<div style="border-top:1px dashed #ccc;margin:10px 0;padding-top:10px;"></div>`;
+        }
+        
+        // Se instrutor não for único, exibe para cada turma
+        if (!instrutorUnico) {
+            html += `<div class="info-label">Instrutor(a)</div>
+                <div class="info-value prof-name" style="font-size:0.9rem;">${prof}</div>`;
+        }
+        
+        html += `<div class="info-label">Código da Turma</div>
+            <div class="info-value" style="font-size:${items.length > 1 ? '0.85rem' : '0.95rem'};">${cod}</div>`;
+        
+        if (turmaNome) {
+            html += `<div class="info-label">Nome da Turma</div>
+                <div class="info-value" style="font-size:${items.length > 1 ? '0.8rem' : '0.95rem'};">${turmaNome}</div>`;
+        }
+    });
+    
+    // Total de alunos (consolidado)
+    html += `<div class="alunos-container">
+        <div class="aluno-badge matriculado">
+            <div class="aluno-badge-icon">✓</div>
+            <div class="aluno-badge-numero">${totalMatric}</div>
+            <div class="aluno-badge-label">Matriculados</div>
+        </div>
+        <div class="aluno-badge pre-matriculado">
+            <div class="aluno-badge-icon">⏳</div>
+            <div class="aluno-badge-numero">${totalPre}</div>
+            <div class="aluno-badge-label">Pré-Matric.</div>
         </div>
     </div>`;
+    
+    html += `</div>`;
+    return html;
 }
 
-/* ── Build full grade HTML ── */
+/* ── Build full grade HTML com agrupamento por sala ── */
 function buildGradeHTML(items) {
     const byDia = {};
-    DIAS_KEYS.forEach(k => byDia[k] = { M: [], V: [] });
+    DIAS_KEYS.forEach(k => byDia[k] = { M: {}, V: {} }); // Agora usa objetos para agrupar por sala
 
+    // Agrupa os itens por dia, turno e sala
     items.forEach(item => {
         const { dia, turno } = extrairDiaETurno(item['CODTURMA']);
         const key = DIAS_KEYS.includes(dia) ? dia : '0';
-        byDia[key][turno === 'V' ? 'V' : 'M'].push(item);
+        const t = turno === 'V' ? 'V' : 'M';
+        const sala = item['SALA_TURMADISCIPLINA'] || '—';
+        const predio = normalizarPredio(item['PREDIO_NOME_TURMADISC']);
+        const salaKey = `${predio}|||${sala}`; // Chave única para sala+prédio
+        
+        if (!byDia[key][t][salaKey]) {
+            byDia[key][t][salaKey] = [];
+        }
+        byDia[key][t][salaKey].push(item);
     });
 
     let html = '';
     DIAS_KEYS.forEach(diaKey => {
-        const mat  = byDia[diaKey].M;
-        const vesp = byDia[diaKey].V;
-        if (!mat.length && !vesp.length) return;
+        const matSalas  = byDia[diaKey].M;
+        const vespSalas = byDia[diaKey].V;
+        
+        const totalMat = Object.values(matSalas).length;
+        const totalVesp = Object.values(vespSalas).length;
+        
+        if (!totalMat && !totalVesp) return;
 
-        const total = mat.length + vesp.length;
+        const total = totalMat + totalVesp;
         const label = DIAS_MAP[diaKey] || 'Outro';
         const icon  = DIAS_ICONS[diaKey] || '📅';
 
         html += `<div class="dia-section" data-dia="${diaKey}">
             <div class="dia-header">
                 <span class="dia-pill">${icon} ${label}</span>
-                <span class="dia-count">${total} turma${total !== 1 ? 's' : ''}</span>
+                <span class="dia-count">${total} sala${total !== 1 ? 's' : ''}</span>
             </div>
             <div class="grid-salas">`;
 
-        if (mat.length) {
+        if (totalMat) {
             html += `<div class="turno-sub mat" style="grid-column:1/-1">☀️ Matutino</div>`;
-            mat.forEach(item => { html += cardHTML(item); });
+            Object.values(matSalas).forEach(turmasNaSala => {
+                html += cardHTML(turmasNaSala);
+            });
         }
-        if (vesp.length) {
+        if (totalVesp) {
             html += `<div class="turno-sub vesp" style="grid-column:1/-1">🌅 Vespertino</div>`;
-            vesp.forEach(item => { html += cardHTML(item); });
+            Object.values(vespSalas).forEach(turmasNaSala => {
+                html += cardHTML(turmasNaSala);
+            });
         }
 
         html += `</div></div>`;
@@ -636,7 +703,7 @@ function applyFilters() {
             if (!emptyEl) {
                 emptyEl = document.createElement('div');
                 emptyEl.className = 'empty-message';
-                emptyEl.textContent = '📭 Nenhuma turma neste dia.';
+                emptyEl.textContent = '📭 Nenhuma sala neste dia.';
                 grid.appendChild(emptyEl);
             }
         } else {
@@ -657,7 +724,7 @@ function applyFilters() {
 
     // badge de contagem do prédio selecionado
     document.getElementById('predioBadge').textContent =
-        `${visibleCount} turma${visibleCount !== 1 ? 's' : ''}`;
+        `${visibleCount} sala${visibleCount !== 1 ? 's' : ''}`;
 
     // search result info
     const infoEl = document.getElementById('searchResultInfo');
