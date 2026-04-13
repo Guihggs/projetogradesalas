@@ -738,6 +738,8 @@ function cardHTML(items) {
         const prof      = esc(item['NOME PROFESSOR(A)'] || 'A definir');
         const cod       = esc(item['CODTURMA'] || '---');
         const turmaNome = esc(item['TURMA NOME'] || '');
+        const matriculados = parseInt(item['ALUNOS STATUSMATRICULADO_TURMA_DISCIPLINA'] || '0');
+        const preMatriculados = parseInt(item['ALUNOS PRE MATRICULADOS_TURMA_DISCIPLINA'] || '0');
 
         if (items.length > 1 && idx > 0) {
             html += `<div style="border-top:1px dashed rgba(211,44,77,0.3);margin:12px 0;padding-top:12px;"></div>`;
@@ -747,7 +749,13 @@ function cardHTML(items) {
                 <div class="info-value prof-name" style="font-size:0.95rem;">${prof}</div>`;
         }
         html += `<div class="info-label">Código da Turma</div>
-            <div class="info-value" style="font-size:${items.length > 1 ? '0.9rem' : '1rem'};">${cod}</div>`;
+            <div class="info-value" style="font-size:${items.length > 1 ? '0.9rem' : '1rem'};display:flex;align-items:center;gap:8px;">
+                <span>${cod}</span>
+                <span style="display:inline-flex;gap:6px;font-size:0.75rem;font-weight:800;">
+                    <span style="color:#28a745;">${matriculados}</span>
+                    <span style="color:#fd7e14;">${preMatriculados}</span>
+                </span>
+            </div>`;
         if (turmaNome) {
             html += `<div class="info-label">Nome da Turma</div>
                 <div class="info-value" style="font-size:${items.length > 1 ? '0.85rem' : '1rem'};">${turmaNome}</div>`;
@@ -1048,4 +1056,4 @@ async function carregarDados() {
 window.addEventListener('DOMContentLoaded', carregarDados);
 </script>
 </body>
-</html>'
+</html>
