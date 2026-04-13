@@ -3,22 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Grade de turmas - Polo DF | DEMA Aprendiz</title>
+    <title>Grade de turmas - Polo DF | DEMÀ Aprendiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --azul-jc: #0059b3;
-            --amarelo-jc: #ffda00;
-            --azul-escuro: #003366;
-            --branco: #FFFFFF;
-            --cinza-claro: #f4f7fc;
-            --sombra: 0 8px 20px rgba(0,0,0,0.1);
+            /* Cores DEMÀ - Manual da Marca */
+            --dema-vermelho: #D32C4D;
+            --dema-azul: #402EDD;
+            --dema-amarelo: #ED9E06;
+            --dema-carbono: #212220;
+            --dema-branco: #FFFFFF;
+            
+            /* Cores de suporte */
             --verde-matricula: #28a745;
             --laranja-pre: #fd7e14;
+            
+            /* Efeitos */
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
         }
+        
         body {
-            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, var(--azul-jc) 0%, var(--azul-escuro) 100%);
+            font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--dema-azul) 0%, var(--dema-vermelho) 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -26,22 +38,22 @@
 
         /* ── HEADER ── */
         .header-banner {
-            background: var(--branco);
+            background: var(--dema-branco);
             padding: 12px 30px;
-            border-bottom: 5px solid var(--amarelo-jc);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-bottom: 5px solid var(--dema-amarelo);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
         .header-content {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
-            flex-wrap: wrap;
-            gap: 15px;
         }
-        .logo-dema-img { height: 60px; width: auto; }
-        .logo-jc-img   { height: 70px; width: auto; }
+        .logo-dema-img { 
+            height: 70px; 
+            width: auto; 
+        }
 
         /* ── CONTAINER ── */
         .container {
@@ -52,20 +64,32 @@
             width: 100%;
         }
 
-        /* ── SEARCH ── */
+        /* ── SEARCH (LIQUID GLASS) ── */
         .search-container {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(6px);
-            border-radius: 24px;
-            padding: 12px 24px;
-            margin: 10px 0 18px 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 30px;
+            padding: 14px 26px;
+            margin: 15px 0 20px 0;
             display: none;
             align-items: center;
-            gap: 12px;
-            box-shadow: var(--sombra);
-            border: 2px solid rgba(255,255,255,0.2);
+            gap: 14px;
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .search-icon { font-size: 1.3rem; color: var(--amarelo-jc); }
+        .search-container:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+        }
+        .search-icon { 
+            font-size: 1.4rem; 
+            color: var(--dema-amarelo); 
+            filter: drop-shadow(0 0 8px rgba(237, 158, 6, 0.5));
+        }
         .search-input {
             flex: 1;
             background: transparent;
@@ -75,309 +99,419 @@
             font-size: 1.1rem;
             font-weight: 500;
             padding: 8px;
-            font-family: inherit;
+            font-family: 'Space Grotesk', sans-serif;
         }
-        .search-input::placeholder { color: rgba(255,255,255,0.6); font-weight: 400; }
+        .search-input::placeholder { 
+            color: rgba(255, 255, 255, 0.65); 
+            font-weight: 400; 
+        }
         .clear-search {
-            background: rgba(255,255,255,0.25);
-            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             font-size: 1.2rem;
-            width: 32px; height: 32px;
+            width: 36px; 
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
-        .clear-search:hover { background: rgba(255,255,255,0.4); transform: rotate(90deg); }
+        .clear-search:hover { 
+            background: rgba(255, 255, 255, 0.35); 
+            transform: rotate(90deg) scale(1.1);
+        }
         .clear-search.visible { display: flex; }
 
-        /* ── PRÉDIO SELECT ── */
+        /* ── PRÉDIO SELECT (LIQUID GLASS) ── */
         .predio-filter-container {
             display: none;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 18px;
+            gap: 14px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         .predio-label {
-            color: rgba(255,255,255,0.85);
-            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             white-space: nowrap;
         }
         .predio-select-wrapper {
             flex: 1;
-            min-width: 220px;
+            min-width: 240px;
             position: relative;
         }
         .predio-select {
             width: 100%;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(6px);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 48px;
-            padding: 10px 44px 10px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 12px 50px 12px 22px;
             color: white;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
-            font-family: inherit;
+            font-family: 'Space Grotesk', sans-serif;
             cursor: pointer;
             outline: none;
             appearance: none;
             -webkit-appearance: none;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: var(--glass-shadow);
         }
-        .predio-select:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.5); }
-        .predio-select:focus { border-color: var(--amarelo-jc); background: rgba(255,255,255,0.2); }
-        .predio-select option { background: var(--azul-escuro); color: white; font-weight: 600; }
+        .predio-select:hover { 
+            background: rgba(255, 255, 255, 0.15); 
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .predio-select:focus { 
+            border-color: var(--dema-amarelo); 
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 0 3px rgba(237, 158, 6, 0.2);
+        }
+        .predio-select option { 
+            background: var(--dema-carbono); 
+            color: white; 
+            font-weight: 600; 
+        }
         .select-arrow {
             position: absolute;
-            right: 16px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--amarelo-jc);
-            font-size: 1rem;
+            color: var(--dema-amarelo);
+            font-size: 1.1rem;
             pointer-events: none;
+            filter: drop-shadow(0 0 6px rgba(237, 158, 6, 0.4));
         }
         .predio-badge-count {
-            background: var(--amarelo-jc);
-            color: var(--azul-escuro);
-            font-size: 0.78rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            color: var(--dema-amarelo);
+            font-size: 0.8rem;
             font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
             white-space: nowrap;
+            box-shadow: var(--glass-shadow);
+            text-shadow: 0 0 10px rgba(237, 158, 6, 0.5);
         }
 
-        /* ── DAY FILTER BAR ── */
+        /* ── DAY FILTER BAR (LIQUID GLASS) ── */
         .day-filter-bar {
             display: none;
-            background: rgba(255,255,255,0.1);
-            border-radius: 48px;
-            padding: 5px;
-            margin-bottom: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 50px;
+            padding: 6px;
+            margin-bottom: 26px;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             justify-content: flex-start;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
         }
         .btn-dia {
             background: transparent;
-            border: none;
-            padding: 9px 18px;
-            font-size: 0.88rem;
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            font-size: 0.9rem;
             font-weight: 700;
-            border-radius: 40px;
+            border-radius: 45px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            color: rgba(255,255,255,0.75);
-            font-family: inherit;
-            letter-spacing: 0.3px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.5px;
             white-space: nowrap;
         }
-        .btn-dia:hover { background: rgba(255,255,255,0.2); color: white; }
-        .btn-dia.active { background: var(--azul-escuro); color: var(--amarelo-jc); box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
+        .btn-dia:hover { 
+            background: rgba(255, 255, 255, 0.15); 
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .btn-dia.active { 
+            background: var(--dema-amarelo);
+            color: var(--dema-carbono); 
+            border-color: var(--dema-amarelo);
+            box-shadow: 0 4px 15px rgba(237, 158, 6, 0.4);
+            transform: translateY(-2px);
+        }
 
         /* ── MAIN CONTENT ── */
-        .grade-content { animation: fadeSlideUp 0.3s ease-out; }
+        .grade-content { 
+            animation: fadeSlideUp 0.4s ease-out; 
+        }
 
-        .dia-section { margin-bottom: 32px; }
+        .dia-section { margin-bottom: 36px; }
         .dia-section.hidden { display: none; }
 
         .dia-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 2px;
+            gap: 14px;
+            margin-bottom: 3px;
         }
         .dia-pill {
-            background: var(--amarelo-jc);
-            color: var(--azul-escuro);
-            padding: 9px 22px;
-            border-radius: 14px 14px 0 0;
+            background: var(--dema-amarelo);
+            color: var(--dema-carbono);
+            padding: 11px 26px;
+            border-radius: 16px 16px 0 0;
             font-weight: 900;
             text-transform: uppercase;
-            font-size: 1.05rem;
-            letter-spacing: 0.5px;
+            font-size: 1.1rem;
+            letter-spacing: 0.8px;
             display: inline-block;
+            box-shadow: 0 4px 12px rgba(237, 158, 6, 0.3);
         }
         .dia-count {
-            background: rgba(255,255,255,0.2);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
             color: white;
             font-size: 0.75rem;
             font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            backdrop-filter: blur(2px);
+            padding: 6px 12px;
+            border-radius: 22px;
         }
 
         .turno-sub {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.08);
-            border-left: 4px solid rgba(255,255,255,0.3);
-            margin: 4px 0;
-            font-size: 0.82rem;
+            gap: 10px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 5px 0;
+            font-size: 0.85rem;
             font-weight: 800;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.75);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
         }
-        .turno-sub.mat { border-left-color: #ffd166; color: #ffd166; }
-        .turno-sub.vesp { border-left-color: #f4a261; color: #f4a261; }
+        .turno-sub.mat { 
+            border-left-color: var(--dema-amarelo); 
+            color: var(--dema-amarelo); 
+        }
+        .turno-sub.vesp { 
+            border-left-color: var(--dema-vermelho); 
+            color: var(--dema-vermelho); 
+        }
 
-        /* ── DIVISOR DE ANDAR ── */
+        /* ── DIVISOR DE ANDAR (LIQUID GLASS) ── */
         .andar-divider {
             grid-column: 1 / -1;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin: 14px 0 6px 0;
+            gap: 14px;
+            margin: 16px 0 8px 0;
         }
-        .andar-divider:first-of-type { margin-top: 4px; }
+        .andar-divider:first-of-type { margin-top: 5px; }
         .andar-badge {
             display: flex;
             align-items: center;
-            gap: 7px;
-            background: linear-gradient(135deg, var(--azul-escuro), #005599);
-            color: var(--amarelo-jc);
-            font-size: 0.78rem;
+            gap: 8px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            color: var(--dema-amarelo);
+            font-size: 0.8rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 6px 16px;
-            border-radius: 20px;
+            letter-spacing: 1.2px;
+            padding: 8px 18px;
+            border-radius: 24px;
             white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,218,0,0.3);
+            box-shadow: var(--glass-shadow);
         }
-        .andar-badge-icon { font-size: 1rem; }
+        .andar-badge-icon { 
+            font-size: 1.1rem; 
+            filter: drop-shadow(0 0 6px rgba(237, 158, 6, 0.5));
+        }
         .andar-line {
             flex: 1;
             height: 1px;
-            background: linear-gradient(to right, rgba(255,218,0,0.4), transparent);
+            background: linear-gradient(to right, rgba(237, 158, 6, 0.5), transparent);
         }
 
         .grid-salas {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 18px;
-            background: rgba(255,255,255,0.08);
-            padding: 20px;
-            border-radius: 0 18px 18px 18px;
-            border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(2px);
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            padding: 22px;
+            border-radius: 0 20px 20px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* ── CARDS ── */
+        /* ── CARDS (LIQUID GLASS) ── */
         .sala-item {
-            background: white;
-            padding: 18px;
-            border-radius: 16px;
-            box-shadow: var(--sombra);
-            border-left: 6px solid var(--amarelo-jc);
-            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 6px solid var(--dema-amarelo);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .sala-item:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .sala-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(237, 158, 6, 0.05) 0%, 
+                rgba(64, 46, 221, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .sala-item:hover::before {
+            opacity: 1;
+        }
+        .sala-item:hover { 
+            transform: translateY(-6px) scale(1.02); 
+            box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.35);
+            border-left-color: var(--dema-vermelho);
+        }
         .sala-item.hidden { display: none; }
 
         .info-label {
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             color: #5a6874;
             text-transform: uppercase;
             font-weight: 800;
-            letter-spacing: 0.8px;
-            margin-top: 10px;
+            letter-spacing: 1px;
+            margin-top: 12px;
         }
         .info-label:first-of-type { margin-top: 0; }
         .info-value {
             font-weight: 700;
-            color: var(--azul-escuro);
-            font-size: 0.95rem;
-            margin-bottom: 4px;
+            color: var(--dema-carbono);
+            font-size: 1rem;
+            margin-bottom: 5px;
             word-break: break-word;
         }
         .prof-name {
-            color: var(--azul-jc);
-            font-size: 1.05rem;
-            border-bottom: 2px solid #ffe3a3;
-            padding-bottom: 7px;
-            margin-bottom: 8px;
+            color: var(--dema-azul);
+            font-size: 1.1rem;
+            border-bottom: 3px solid var(--dema-amarelo);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 800;
         }
-        .sala-destaque { font-size: 1.4rem; font-weight: 800; color: #004b8f; }
+        .sala-destaque { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--dema-vermelho);
+            text-shadow: 0 2px 4px rgba(211, 44, 77, 0.2);
+        }
 
         .alunos-container {
             display: flex;
-            gap: 10px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 2px dashed #e0e6ed;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px dashed rgba(211, 44, 77, 0.2);
         }
         .aluno-badge {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 9px 6px;
-            border-radius: 10px;
-            transition: transform 0.2s ease;
+            padding: 11px 8px;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
-        .aluno-badge:hover { transform: scale(1.05); }
+        .aluno-badge:hover { 
+            transform: scale(1.08) translateY(-3px);
+        }
         .aluno-badge.matriculado {
-            background: linear-gradient(135deg,#e8f5e9,#c8e6c9);
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(40, 167, 69, 0.25));
             border: 2px solid var(--verde-matricula);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
         }
         .aluno-badge.pre-matriculado {
-            background: linear-gradient(135deg,#fff3e0,#ffe0b2);
+            background: linear-gradient(135deg, rgba(253, 126, 20, 0.15), rgba(253, 126, 20, 0.25));
             border: 2px solid var(--laranja-pre);
+            box-shadow: 0 4px 12px rgba(253, 126, 20, 0.2);
         }
-        .aluno-badge-icon { font-size: 1.1rem; margin-bottom: 3px; }
-        .aluno-badge-numero { font-size: 1.5rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+        .aluno-badge-icon { 
+            font-size: 1.2rem; 
+            margin-bottom: 4px; 
+        }
+        .aluno-badge-numero { 
+            font-size: 1.6rem; 
+            font-weight: 900; 
+            line-height: 1; 
+            margin-bottom: 3px; 
+        }
         .aluno-badge.matriculado .aluno-badge-numero { color: var(--verde-matricula); }
         .aluno-badge.pre-matriculado .aluno-badge-numero { color: var(--laranja-pre); }
-        .aluno-badge-label { font-size: 0.62rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.4px; text-align: center; line-height: 1.2; }
+        .aluno-badge-label { 
+            font-size: 0.64rem; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            letter-spacing: 0.5px; 
+            text-align: center; 
+            line-height: 1.2; 
+        }
         .aluno-badge.matriculado .aluno-badge-label { color: #1b5e20; }
         .aluno-badge.pre-matriculado .aluno-badge-label { color: #e65100; }
 
         /* ── EMPTY / LOADING ── */
         .empty-message {
-            background: rgba(255,255,240,0.9);
-            border-radius: 16px;
-            padding: 28px 20px;
+            background: rgba(255, 255, 240, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            padding: 30px 22px;
             text-align: center;
-            color: var(--azul-escuro);
+            color: var(--dema-carbono);
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
             grid-column: 1 / -1;
+            border: 1px solid rgba(237, 158, 6, 0.3);
         }
         .loading {
             color: white;
             text-align: center;
-            padding: 60px 20px;
-            font-size: 1.3rem;
+            padding: 70px 24px;
+            font-size: 1.4rem;
             font-weight: 500;
-            background: rgba(0,0,0,0.2);
-            border-radius: 40px;
-            backdrop-filter: blur(6px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 45px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
         }
 
         /* ── SEARCH RESULT COUNT ── */
         .search-result-info {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             display: none;
-            padding: 0 4px;
+            padding: 0 5px;
         }
         .search-result-info.visible { display: block; }
 
@@ -385,36 +519,43 @@
         .no-results-full {
             display: none;
             text-align: center;
-            color: rgba(255,255,255,0.75);
-            padding: 48px 20px;
-            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 55px 24px;
+            font-size: 1.1rem;
             font-weight: 600;
         }
         .no-results-full.visible { display: block; }
 
         /* ── FOOTER ── */
         footer {
-            background: var(--amarelo-jc);
-            padding: 20px;
+            background: var(--dema-amarelo);
+            padding: 24px;
             text-align: center;
-            margin-top: 40px;
-            border-top: 2px solid rgba(0,0,0,0.05);
+            margin-top: 45px;
+            border-top: 3px solid rgba(0, 0, 0, 0.05);
+        }
+        footer p {
+            font-size: 0.75rem;
+            margin-top: 12px;
+            color: var(--dema-carbono);
+            font-weight: 600;
         }
 
         @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(15px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 640px) {
             .header-content { flex-direction: column; text-align: center; }
-            .btn-dia { padding: 7px 13px; font-size: 0.82rem; }
-            .grid-salas { padding: 14px; gap: 14px; }
-            .dia-pill { font-size: 0.9rem; padding: 7px 16px; }
-            .search-container { padding: 10px 14px; }
+            .btn-dia { padding: 8px 15px; font-size: 0.85rem; }
+            .grid-salas { padding: 16px; gap: 16px; grid-template-columns: 1fr; }
+            .dia-pill { font-size: 0.95rem; padding: 9px 18px; }
+            .search-container { padding: 12px 16px; }
             .search-input { font-size: 1rem; }
             .predio-filter-container { flex-direction: column; align-items: stretch; }
             .predio-label { text-align: center; }
+            .logo-dema-img { height: 55px; }
         }
     </style>
 </head>
@@ -422,8 +563,7 @@
 
 <header class="header-banner">
     <div class="header-content">
-        <img src="demalogo.png" alt="Logo DEMA Aprendiz" class="logo-dema-img" onerror="this.style.display='none'">
-        <img src="logo.png"     alt="Logo Jovem Candango" class="logo-jc-img"   onerror="this.style.display='none'">
+        <img src="demalogo.png" alt="Logo DEMÀ Aprendiz" class="logo-dema-img" onerror="this.style.display='none'">
     </div>
 </header>
 
@@ -469,9 +609,9 @@
 </div>
 
 <footer>
-    <img src="demalogo.png" alt="Logo DEMA Aprendiz"
-         style="height:40px;width:auto;opacity:0.9;" onerror="this.style.display='none'">
-    <p style="font-size:0.7rem;margin-top:10px;color:#004d80;">Um futuro para cada história.</p>
+    <img src="demalogo.png" alt="Logo DEMÀ Aprendiz"
+         style="height:45px;width:auto;opacity:0.95;" onerror="this.style.display='none'">
+    <p>Um futuro para cada história.</p>
 </footer>
 
 <script>
@@ -513,10 +653,7 @@ function parseCSV(csvText) {
     return rows;
 }
 
-/* Identificar andar a partir do texto da coluna SALA_TURMADISCIPLINA
-   Regra: verifica se o valor contem "1o ANDAR", "2o ANDAR" ou "3o ANDAR"
-   apos normalizar maiusculas, acentos e o simbolo ordinal.
-*/
+/* Identificar andar a partir do texto da coluna SALA_TURMADISCIPLINA */
 function extrairAndar(nomeSala) {
     if (!nomeSala) return '?';
     const s = nomeSala.toUpperCase()
@@ -585,7 +722,7 @@ function cardHTML(items) {
         <div class="info-value sala-destaque">${sala}</div>`;
 
     if (items.length > 1) {
-        html += `<div style="background:#e3f2fd;padding:6px 10px;border-radius:8px;margin:8px 0;text-align:center;font-size:0.75rem;font-weight:700;color:#1976d2;">
+        html += `<div style="background:linear-gradient(135deg, rgba(64,46,221,0.1), rgba(211,44,77,0.1));padding:8px 12px;border-radius:12px;margin:10px 0;text-align:center;font-size:0.78rem;font-weight:700;color:#402EDD;border:1px solid rgba(64,46,221,0.2);">
             📚 ${items.length} turmas nesta sala
         </div>`;
     }
@@ -601,17 +738,17 @@ function cardHTML(items) {
         const turmaNome = esc(item['TURMA NOME'] || '');
 
         if (items.length > 1 && idx > 0) {
-            html += `<div style="border-top:1px dashed #ccc;margin:10px 0;padding-top:10px;"></div>`;
+            html += `<div style="border-top:1px dashed rgba(211,44,77,0.3);margin:12px 0;padding-top:12px;"></div>`;
         }
         if (!instrutorUnico) {
             html += `<div class="info-label">Instrutor(a)</div>
-                <div class="info-value prof-name" style="font-size:0.9rem;">${prof}</div>`;
+                <div class="info-value prof-name" style="font-size:0.95rem;">${prof}</div>`;
         }
         html += `<div class="info-label">Código da Turma</div>
-            <div class="info-value" style="font-size:${items.length > 1 ? '0.85rem' : '0.95rem'};">${cod}</div>`;
+            <div class="info-value" style="font-size:${items.length > 1 ? '0.9rem' : '1rem'};">${cod}</div>`;
         if (turmaNome) {
             html += `<div class="info-label">Nome da Turma</div>
-                <div class="info-value" style="font-size:${items.length > 1 ? '0.8rem' : '0.95rem'};">${turmaNome}</div>`;
+                <div class="info-value" style="font-size:${items.length > 1 ? '0.85rem' : '1rem'};">${turmaNome}</div>`;
         }
     });
 
@@ -656,10 +793,10 @@ function buildGradeHTML(items) {
         const sala = item['SALA_TURMADISCIPLINA'] || '—';
         const predio = normalizarPredio(item['PREDIO_NOME_TURMADISC']);
         
-        // MODIFICAÇÃO PRINCIPAL: Se for PLATAFORMA CONECTADA, usar código da turma como chave única
+        // Se for PLATAFORMA CONECTADA, usar código da turma como chave única
         const salaKey = isPlataformaConectada(sala) 
-            ? `${predio}|||${sala}|||${item['CODTURMA']}`  // Chave única por turma
-            : `${predio}|||${sala}`;  // Agrupamento normal por sala
+            ? `${predio}|||${sala}|||${item['CODTURMA']}`
+            : `${predio}|||${sala}`;
 
         if (!byDia[key][t][salaKey]) {
             byDia[key][t][salaKey] = [];
@@ -690,7 +827,6 @@ function buildGradeHTML(items) {
 
         /* ── Renderiza turno com divisores de andar ── */
         function renderTurnoComAndares(salasObj) {
-            // Agrupa as salas por andar
             const porAndar = {};
             Object.entries(salasObj).forEach(([salaKey, turmasNaSala]) => {
                 const nomeSala = turmasNaSala[0]['SALA_TURMADISCIPLINA'] || '—';
@@ -699,7 +835,6 @@ function buildGradeHTML(items) {
                 porAndar[andar].push(turmasNaSala);
             });
 
-            // Ordena os andares: 1, 2, 3, ?
             const andarOrdem = ['1','2','3','?'];
             let out = '';
             andarOrdem.forEach(andarKey => {
@@ -774,10 +909,8 @@ function applyFilters() {
         if (visible) visibleCount++;
     });
 
-    /* Oculta/exibe divisores de andar conforme os cards visíveis */
     panel.querySelectorAll('.andar-divider').forEach(div => {
         const andarKey = div.getAttribute('data-andar-div');
-        // Verifica se há algum card visível com esse andar neste grid
         const grid = div.closest('.grid-salas');
         if (!grid) return;
         const temVisivel = Array.from(grid.querySelectorAll(`.sala-item[data-andar="${andarKey}"]`))
@@ -904,8 +1037,8 @@ async function carregarDados() {
         console.error(err);
         const l = document.getElementById('loading');
         l.innerHTML = '⚠️ Erro ao carregar os dados. Verifique a conexão ou tente novamente.<br><small>' + err.message + '</small>';
-        l.style.background = 'rgba(220,53,69,0.8)';
-        l.style.borderRadius = '24px';
+        l.style.background = 'rgba(211, 44, 77, 0.8)';
+        l.style.borderRadius = '30px';
     }
 }
 
