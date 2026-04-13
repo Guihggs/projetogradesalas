@@ -621,11 +621,12 @@ const DIAS_MAP  = { '0':'Diária', '2':'Segunda-feira', '3':'Terça-feira', '4':
 const DIAS_KEYS = ['0','2','3','4','5','6'];
 const DIAS_ICONS= { '0':'🔁', '2':'📅', '3':'📅', '4':'📅', '5':'📅', '6':'📅' };
 
-/* Ícones e rótulos de andar */
+/* Ícones e rótulos de andar — 'T' = Térreo (sala sem info de andar) */
 const ANDAR_INFO = {
-    '1': { label: '1º Andar', icon: '🏠' },
-    '2': { label: '2º Andar', icon: '🏢' },
-    '3': { label: '3º Andar', icon: '🏬' },
+    'T': { label: 'Térreo',                 icon: '🏗️' },
+    '1': { label: '1º Andar',               icon: '🏠' },
+    '2': { label: '2º Andar',               icon: '🏢' },
+    '3': { label: '3º Andar',               icon: '🏬' },
     '?': { label: 'Andar não identificado', icon: '❓' }
 };
 
@@ -653,9 +654,10 @@ function parseCSV(csvText) {
     return rows;
 }
 
-/* Identificar andar a partir do texto da coluna SALA_TURMADISCIPLINA */
+/* Identificar andar a partir do texto da coluna SALA_TURMADISCIPLINA.
+   Retorna 'T' (Térreo) quando não há informação de andar. */
 function extrairAndar(nomeSala) {
-    if (!nomeSala) return '?';
+    if (!nomeSala) return 'T';
     const s = nomeSala.toUpperCase()
         .replace(/º|°/g, 'O')
         .normalize('NFD')
@@ -663,7 +665,7 @@ function extrairAndar(nomeSala) {
     if (s.includes('1O ANDAR') || s.includes('1 ANDAR')) return '1';
     if (s.includes('2O ANDAR') || s.includes('2 ANDAR')) return '2';
     if (s.includes('3O ANDAR') || s.includes('3 ANDAR')) return '3';
-    return '?';
+    return 'T'; // sem menção de andar = térreo
 }
 
 /* ── Verifica se é PLATAFORMA CONECTADA ── */
@@ -835,7 +837,8 @@ function buildGradeHTML(items) {
                 porAndar[andar].push(turmasNaSala);
             });
 
-            const andarOrdem = ['1','2','3','?'];
+            // Térreo ('T') aparece primeiro, depois andares, '?' ao final
+            const andarOrdem = ['T', '1', '2', '3', '?'];
             let out = '';
             andarOrdem.forEach(andarKey => {
                 if (!porAndar[andarKey] || porAndar[andarKey].length === 0) return;
@@ -1045,4 +1048,4 @@ async function carregarDados() {
 window.addEventListener('DOMContentLoaded', carregarDados);
 </script>
 </body>
-</html>
+</html>'
